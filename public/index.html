@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html data-ng-app="DemoApp">
 
-  <head>
+<head>
 
-    <!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
-    <link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
-    <!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
-    
-        <!-- Angular Material Dependencies -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
 
-    <!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
-    <script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
-    <!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -23,52 +23,56 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="./app.js"></script>
-    <script src="./js/angular-script.js"></script>
+	<script src="./js/angular-script.js"></script>
 
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
-	
-    <title>Login</title>
-  </head>
-  <body data-ng-controller="MainCtrl">
+
+	<title>Login</title>
+</head>
+
+<body data-ng-controller="MainCtrl">
 	<div class="loginform">
-  
+
 		<h2 class="text-center m-b-30">Sign In</h2>
 		<div class="row">
-		  <md-input-container flex>
-			<label  for="username">You are...</label>			<md-select data-ng-model="usertype" class="md-block flex-gt-sm" name="authType" placeholder="You are..." required="" role="listbox" tabindex="0" aria-label="You are..." aria-labelledby="" aria-required="true" aria-disabled="false" aria-invalid="false"  aria-multiselectable="false">
-				<md-option data-ng-value="obj" data-ng-repeat="obj in categories">{{ obj }}</md-option>
-			</md-select>
-			
-		  </md-input-container>
-		  
+			<md-input-container flex>
+				<label for="username">You are...</label>
+				<md-select data-ng-model="usertype" class="md-block flex-gt-sm" name="authType" placeholder="You are..."
+				 required="" role="listbox" tabindex="0" aria-label="You are..." aria-labelledby="" aria-required="true" aria-disabled="false"
+				 aria-invalid="false" aria-multiselectable="false">
+					<md-option data-ng-value="obj" data-ng-repeat="obj in categories">{{ obj }}</md-option>
+				</md-select>
+
+			</md-input-container>
+
 		</div>
 		<div class="row">
 			<md-input-container flex>
-				<label  for="username">Email</label>
-				<input  ng-model="loginmail"  name="username" required="true" type="text">
+				<label for="username">Email</label>
+				<input ng-model="loginmail" name="username" required="true" type="text">
 			</md-input-container>
 		</div>
 		<div class="row">
 			<md-input-container flex>
-				<label  for="password">Password</label>
-				<input ng-model="pwd"  name="password" required="true" type="password">
+				<label for="password">Password</label>
+				<input ng-model="pwd" name="password" required="true" type="password">
 			</md-input-container>
 		</div>
-		
+
 		<div class="row">
 			<md-input-container flex>
 				<button id="signin" class="btn btn-primary" style="margin-left:15%" ng-click="login()">Log In</button>
-				<a  class="btn btn-link" href="./templates/register.html" style="margin-left:25%">Register</a>
+				<a class="btn btn-link" href="./templates/register.html" style="margin-left:25%">Register</a>
 			</md-input-container>
 		</div>
 		<div class="row">
 			<md-input-container flex>
-				<a  class="btn btn-link" href="./reset.html" style="margin-left:35%">Forgot password?</a>
+				<a class="btn btn-link" href="./reset.html" style="margin-left:35%">Forgot password?</a>
 			</md-input-container>
 		</div>
 	</div>
-  </body>
-  <style>
+</body>
+<style>
 	.loginform {
 		position: absolute;
 		top: 40%;
@@ -76,27 +80,31 @@
 		width: calc(100% - 30px);
 		max-width: 550px;
 		padding: 50px 20px 30px 20px;
-		-webkit-transform: translate(-50%,-50%);
-		transform: translate(-50%,-50%);
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
 		border-radius: 5px;
-		box-shadow: 0 0 5px hsla(0,0%,59%,.8);
-    	background: #ffffff;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+		background: #ffffff;
 	}
-	md-input-container{
-		width:80%;
-		margin-left:10%
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%
 	}
-	body{
+
+	body {
 		background: url("./Coverimage.jpg");
-   		background-attachment: fixed;
-    	background-size: 100% auto;
-    	background-size: 100% 100%;
-   		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-size: 100% auto;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
 
 	}
-	input{
+
+	input {
 		height: 155px;
 		font-size: 25px
 	}
-  </style>
+</style>
+
 </html>

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html data-ng-app="DemoApp">
 
-  <head>
+<head>
 
-    <!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
-    <link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
-    <!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
-    
-        <!-- Angular Material Dependencies -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
 
-    <!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
-    <script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
-    <!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="../app.js"></script>
-    <script src="../js/angular-script.js"></script>
+	<script src="../js/angular-script.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -26,28 +26,33 @@
 	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
-	
+
 	<title>View Feedbacks</title>
-  </head>
-  
-  <body data-ng-controller="MainCtrl">
+</head>
+
+<body data-ng-controller="MainCtrl">
 	<nav _ngcontent-c5="" class="navbar navbar-inverse">
-	  <div _ngcontent-c5="" class="container-fluid">
-		<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
-		  <!----><li _ngcontent-c5="" ng-click="logout()"><a _ngcontent-c5=""><span _ngcontent-c5="" class="glyphicon glyphicon-log-out"></span> Sign Out </a></li>      
-		</ul>
-	  </div>
+		<div _ngcontent-c5="" class="container-fluid">
+			<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<!---->
+				<li _ngcontent-c5="" ng-click="logout()">
+					<a _ngcontent-c5="">
+						<span _ngcontent-c5="" class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				</li>
+			</ul>
+		</div>
 	</nav>
 	<div class="main" ng-init="myfeedbackscore()">
-	
+
 		<h4>Your Answer</h4>
 		<div class="row well">
-			
+
 			<md-input-container flex>
-				<textarea rows="3"style="border-radius:5px;color:#31708f;border-color:green;font-size:23px;background-color:white;width:125%;margin-left:-13%;text-align:left" readonly="true" ng-model="currentmyanswer">
+				<textarea rows="3" style="border-radius:5px;color:#31708f;border-color:green;font-size:23px;background-color:white;width:125%;margin-left:-13%;text-align:left"
+				 readonly="true" ng-model="currentmyanswer">
 				</textarea>
 			</md-input-container>
-			
+
 		</div>
 		<md-progress-linear ng-show="progresskey" md-mode="query" style="position:absolute;width:100%;margin-left:-3%"></md-progress-linear>
 		<hr style="border: 1px solid gray" />​
@@ -61,44 +66,47 @@
 						{{resultscore[$index]}}
 					</div>
 				</md-input-container>
-				
+
 			</div>
-			
+
 		</div>
 		<div ng-show="scalehide && questiontype" class="row">
 			<md-input-container flex>
 				<h3>No Feedback Given</h3>
 			</md-input-container>
-			
+
 		</div>
 		<hr style="border: 1px solid gray" ng-show="questiontype" />​
 		<label ng-show="!questiontype2">Feedback</label>
 		<div class="row" ng-show="!questiontype2">
-			
+
 			<div class="col-md-1">
-				<button  class="btn btn-default" style="margin-left:20%;margin-top:60px;color:green;border-color:green" ng-click="previousfeedtxt()" ng-disabled="viewfeedbtn"><</button>
+				<button class="btn btn-default" style="margin-left:20%;margin-top:60px;color:green;border-color:green" ng-click="previousfeedtxt()"
+				 ng-disabled="viewfeedbtn">
+					<</button>
 			</div>
 			<div class="col-md-10">
 				<md-input-container flex>
-					<textarea rows="5"style="border-radius:5px;font-size:23px;background-color:white;width:130%;margin-left:-12%;text-align:left"  readonly="true">{{texts[feedindex]}}
+					<textarea rows="5" style="border-radius:5px;font-size:23px;background-color:white;width:130%;margin-left:-12%;text-align:left"
+					 readonly="true">{{texts[feedindex]}}
 					</textarea>
 				</md-input-container>
 			</div>
 			<div class="col-md-1">
-				<button  class="btn btn-default" style="margin-top:60px;color:green;border-color:green" ng-click="nextfeedtxt()" ng-disabled="viewfeedbtn">></button>
+				<button class="btn btn-default" style="margin-top:60px;color:green;border-color:green" ng-click="nextfeedtxt()" ng-disabled="viewfeedbtn">></button>
 			</div>
 		</div>
-		<hr style="border: 1px solid gray"  ng-show="!questiontype2"/>​
+		<hr style="border: 1px solid gray" ng-show="!questiontype2" />​
 		<div class="row">
 			<md-input-container flex>
-				<a  class="btn btn-link" href="../templates/screen2.html" style="margin-left:20%;width:150px">Back</a>
-				<a  class="btn btn-link" href="../templates/questions for students.html" style="margin-left:5%;width:150px">Select Question</a>
+				<a class="btn btn-link" href="../templates/screen2.html" style="margin-left:20%;width:150px">Back</a>
+				<a class="btn btn-link" href="../templates/questions for students.html" style="margin-left:5%;width:150px">Select Question</a>
 			</md-input-container>
 		</div>
 	</div>
-	
-  </body>
-  <style>
+
+</body>
+<style>
 	.main {
 		position: relative;
 		top: 50%;
@@ -106,19 +114,21 @@
 		width: calc(100% - 50px);
 		max-width: 650px;
 		padding: 50px 20px 50px 20px;
-		-webkit-transform: translate(-50%,-50%);
-		transform: translate(-50%,-50%);
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
 		border-radius: 5px;
-		box-shadow: 0 0 5px hsla(0,0%,59%,.8);
-		margin-bottom:25px;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+		margin-bottom: 25px;
 	}
-	md-input-container{
-		width:80%;
-		margin-left:10%
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%
 	}
+
 	.checked {
 		color: orange;
 	}
-	
-  </style>
+</style>
+
 </html>

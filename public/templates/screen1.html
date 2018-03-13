@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html data-ng-app="DemoApp">
 
-  <head>
+<head>
 
-    <!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
-    <link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
-    <!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
-    
-        <!-- Angular Material Dependencies -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
 
-    <!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
-    <script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
-    <!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="../app.js"></script>
-    <script src="../js/angular-script.js"></script>
+	<script src="../js/angular-script.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -26,16 +26,21 @@
 	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
-	
+
 	<title>Submit Unswer</title>
-  </head>
-  <body data-ng-controller="MainCtrl">
+</head>
+
+<body data-ng-controller="MainCtrl">
 	<nav _ngcontent-c5="" class="navbar navbar-inverse">
-	  <div _ngcontent-c5="" class="container-fluid">
-		<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
-		  <!----><li _ngcontent-c5="" ng-click="logout()"><a _ngcontent-c5=""><span _ngcontent-c5="" class="glyphicon glyphicon-log-out"></span> Sign Out </a></li>      
-		</ul>
-	  </div>
+		<div _ngcontent-c5="" class="container-fluid">
+			<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<!---->
+				<li _ngcontent-c5="" ng-click="logout()">
+					<a _ngcontent-c5="">
+						<span _ngcontent-c5="" class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				</li>
+			</ul>
+		</div>
 	</nav>
 	<div class="row" ng-init="loadimage(0)">
 		<div class="com-md-4"></div>
@@ -43,10 +48,10 @@
 			<md-input-container flex>
 				<img ng-show="imgloaded" alt="Smiley face" style="margin-left: 20%;width:60%">
 			</md-input-container>
-			
+
 		</div>
 		<div class="com-md-4"></div>
-			
+
 	</div>
 	<div class="row">
 		<md-input-container flex style="font-size:35px;text-align: center;color:green">
@@ -54,10 +59,10 @@
 		</md-input-container>
 	</div>
 	<hr style="border: 1px solid gray" />​
-	<div class="row"ng-hide="submitAnswerDisableKey">
+	<div class="row" ng-hide="submitAnswerDisableKey">
 		<md-input-container flex>
 			<label>Type Your Answer (e.g. X)</label>
-			<textarea ng-model="answer" rows="3" style="border-radius:5px;height:10px" ></textarea>
+			<textarea ng-model="answer" rows="3" style="border-radius:5px;height:10px"></textarea>
 		</md-input-container>
 	</div>
 	<div class="row" ng-show="submitAnswerDisableKey">
@@ -65,19 +70,19 @@
 		<br>
 		<md-input-container flex>
 			<label>Your answer</label>
-			<input ng-model="answer" readonly="true"/>
+			<input ng-model="answer" readonly="true" />
 		</md-input-container>
 	</div>
 	<hr style="border: 1px solid gray" />​
 	<div class="row">
 		<md-input-container flex>
-			<button  class="btn btn-primary" style="margin-left:30%;width:20%;" ng-click="saveanswer()" ng-disabled="submitAnswerDisableKey">Submit</button>
-			<a  class="btn btn-link" href="../templates/questions for students.html" style="margin-left:10%">Back</a>
-			<a  class="btn btn-link" ng-click="nextpage()" href="../templates/screen2.html" style="margin-left:10%" ng-show="submitAnswerDisableKey">Next</a>
+			<button class="btn btn-primary" style="margin-left:30%;width:20%;" ng-click="saveanswer()" ng-disabled="submitAnswerDisableKey">Submit</button>
+			<a class="btn btn-link" href="../templates/questions for students.html" style="margin-left:10%">Back</a>
+			<a class="btn btn-link" ng-click="nextpage()" href="../templates/screen2.html" style="margin-left:10%" ng-show="submitAnswerDisableKey">Next</a>
 		</md-input-container>
 	</div>
-  </body>
-  <style>
+</body>
+<style>
 	.main {
 		position: relative;
 		top: 0%;
@@ -89,9 +94,11 @@
 		border-radius: 5px;
 		box-shadow: 0 0 5px hsla(0,0%,59%,.8);*/
 	}
-	md-input-container{
-		width:80%;
-		margin-left:10%
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%
 	}
-  </style>
+</style>
+
 </html>
