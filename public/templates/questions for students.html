@@ -2,6 +2,7 @@
 <html data-ng-app="DemoApp">
 
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 
 	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
 	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
@@ -30,9 +31,9 @@
 	<title>Select Question</title>
 </head>
 
-<body data-ng-controller="MainCtrl" ng-init="getqts()">
+<body data-ng-controller="MainCtrl" ng-init="getAllQuestions()">
 	<nav _ngcontent-c5="" class="navbar navbar-inverse">
-		<div _ngcontent-c5="" class="navbar-header">
+		<div _ngcontent-c5="" class="navbar-header" ng-hide="true" >
 			<a _ngcontent-c5="" class="navbar-brand typequestion" style="color: white;">Feedback Type</a>
 			<a _ngcontent-c5="" href="./viewquestion/viewdigit.html" class="navbar-brand typequestion">Digit Type</a>
 			<a _ngcontent-c5="" href="./viewquestion/viewtext.html" class="navbar-brand typequestion">Text Type</a>
@@ -61,17 +62,47 @@
 	<div class="main">
 		<h2 class="text-center m-b-30">Select Question</h2>
 		<hr style="border: 1px solid gray" />​
+
+		<!-- feedback Type questions -->
 		<div class="row">
-			<div class="row" ng-repeat="obj in questions track by $index" style="margin-top:5px;">
+			<div class="row" ng-repeat="obj in feedbackTypequestions track by $index" style="margin-top:5px;">
 				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goSubmitAnswer(obj.key,obj.value,obj.type,obj.feedqts)">
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</div>
 				</div>
-				<!-- <div class="col-md-2"> -->
-				<!-- <button  class="btn btn-waring"  style="margin-left:width:10%;color:black;">X</button> -->
-				<!-- </div> -->
 			</div>
 		</div>
-
+		<!-- digit type questions -->
+		<div class="row">
+			<div class="row" ng-repeat="obj in digitTypequestions track by $index" style="margin-top:5px;">
+				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goDigitSubmitAnswer(obj.key,obj.value)">
+					<p style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</p>
+				</div>
+			</div>
+		</div>
+		<!-- text type questions -->
+		<div class="row">
+			<div class="row" ng-repeat="obj in textTypequestions track by $index" style="margin-top:5px;">
+				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goTextSubmitAnswer(obj.key,obj.value)">
+					<p style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</p>
+				</div>
+			</div>
+		</div>
+		<!-- dropdown type questions -->
+		<div class="row">
+			<div class="row" ng-repeat="obj in dropdownTypequestions track by $index" style="margin-top:5px;">
+				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goDropdownSubmitAnswer(obj.key,obj.value)">
+					<p style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</p>
+				</div>
+			</div>
+		</div>
+		<!-- slide type questions -->
+		<div class="row">
+			<div class="row" ng-repeat="obj in slideTypequestions track by $index" style="margin-top:5px;">
+				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goSlideSubmitAnswer(obj.key,obj.value)">
+					<p style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 <style>

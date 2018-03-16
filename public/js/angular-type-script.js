@@ -173,6 +173,16 @@ app.controller('TypeCtrl', function($scope, toaster) {
 			$scope.error('You have to login!');
 		}
 	}
+	
+	$scope.nextpage_dropdown = function () {
+		if (firebase.auth().currentUser) {
+			var updates = {};
+			localStorage.setItem("currentmydropdownanswer", $scope.dropdownanswer);
+			window.location.href = './viewClassDropdownanswer.html';
+		} else {
+			$scope.error('You have to login!');
+		}
+	}
 	//Get Class Average Answer
 	$scope.getclassAverage=function(){
 		$scope.sumval='';

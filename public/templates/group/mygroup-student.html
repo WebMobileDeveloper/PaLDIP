@@ -56,17 +56,16 @@
 				</md-input-container>
 			</div>
 		</div>
-
-		<div class="row" ng-repeat="obj in studentgroups" style="background-color: lightgray;margin-top: 2px;width:110%" ng-click="studentGroupDetails(obj,studentgroupnames[$index],studentgroupQuestionSets[$index])">
+		<div class="row" ng-repeat="obj in studentgroups" style="background-color: lightgray;margin-top: 2px;width:110%" ng-click="studentGroupDetails(obj)">
 
 			<div class="col-md-6 col-md-offset-1 groupdetails roweffect">
 				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{studentgroupnames[$index]}}</div>
+					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj["groupname"]}}</div>
 				</md-input-container>
 			</div>
 			<div class="col-md-3 qtdetails groupkey roweffect">
 				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj}}</div>
+					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj["group_id"]}}</div>
 				</md-input-container>
 			</div>
 		</div>

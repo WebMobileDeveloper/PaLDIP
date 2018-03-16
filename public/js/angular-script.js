@@ -224,12 +224,87 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//this function works when question for students.html and create question file loads. so when students login, questions are displayed.
 	//After login, display questions.
+	$scope.getAllQuestions = function () {
+
+		var questionsetkey = localStorage.getItem("questionsetkey");
+
+		// ++++++++++++++++++ get Feedback Type Questions ++++++++++++++++++
+		$scope.feedbackTypequestions = [];
+		var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
+		qtdata.on('value', function (snapshot) {
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.key
+				var childData = childSnapshot.val();
+				//when text feedback
+				if (childData['feedqts'] == undefined)
+					$scope.feedbackTypequestions.push({ key: key, value: childData['question'], type: childData['type'], feedqts: [] });
+				else//when scale feedback
+					$scope.feedbackTypequestions.push({ key: key, value: childData['question'], type: childData['type'], feedqts: childData['feedqts'] });
+			});
+			$scope.safeApply();
+		});
+
+		// ++++++++++++++++++ get digit Type Questions ++++++++++++++++++
+		$scope.digitTypequestions = [];
+		var qtdata = firebase.database().ref('DigitQuestions').orderByChild("Set").equalTo(questionsetkey);
+		qtdata.on('value', function (snapshot) {
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.key
+				var childData = childSnapshot.val();
+				//when text feedback
+				$scope.digitTypequestions.push({ key: key, value: childData['question'] });
+			});
+			$scope.safeApply();
+		});
+
+		// ++++++++++++++++++ get text Type Questions ++++++++++++++++++
+		$scope.textTypequestions = [];
+		var qtdata = firebase.database().ref('TextQuestions').orderByChild("Set").equalTo(questionsetkey);
+		qtdata.on('value', function (snapshot) {
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.key
+				var childData = childSnapshot.val();
+				//when text feedback
+				$scope.textTypequestions.push({ key: key, value: childData['question'] });
+			});
+			$scope.safeApply();
+		});
+
+		// ++++++++++++++++++ get dropdown Type Questions ++++++++++++++++++
+		$scope.dropdownTypequestions = [];
+		var qtdata = firebase.database().ref('DropdownQuestions').orderByChild("Set").equalTo(questionsetkey);
+		qtdata.on('value', function (snapshot) {
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.key
+				var childData = childSnapshot.val();
+				//when text feedback
+				$scope.dropdownTypequestions.push({ key: key, value: childData['question'] });
+			});
+			$scope.safeApply();
+		});
+
+		// ++++++++++++++++++ get slide Type Questions ++++++++++++++++++
+		$scope.slideTypequestions = [];
+		console.log(questionsetkey)
+		var qtdata = firebase.database().ref('SlideQuestions').orderByChild("Set").equalTo(questionsetkey);
+		qtdata.on('value', function (snapshot) {
+
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.key
+				var childData = childSnapshot.val();
+				//when text feedback
+				$scope.slideTypequestions.push({ key: key, value: childData['question'] });
+			});
+			$scope.safeApply();
+		});
+	}
+
+
 	$scope.getqts = function () {
 		$scope.questions = [];
 		var questionsetkey = localStorage.getItem("questionsetkey");
 		var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
 		qtdata.on('value', function (snapshot) {
-
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
 				var childData = childSnapshot.val();
@@ -241,7 +316,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			});
 			$scope.safeApply();
 		});
-
 	}
 	$scope.getqtsteacherside = function () {
 		$scope.questions = [];
@@ -592,6 +666,15 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			localStorage.setItem("currentmyanswer", $scope.answer);
 			window.location.href = '../templates/screen2.html';
 		} else {
+			$scope.error('You have to login!');
+		}
+	}
+	$scope.nextpage_text=function(){
+		if(firebase.auth().currentUser){
+			var updates={};
+			localStorage.setItem("currentmytextanswer",$scope.textanswer);
+			window.location.href = './viewClassTextanswer.html';
+		}else{
 			$scope.error('You have to login!');
 		}
 	}
@@ -1074,6 +1157,63 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		})
 
 	}
+
+
+
+	//=================================== copy from angular-type-script.js ===============================================
+	//save current selected Text type Question to localstorage
+	$scope.goTextSubmitAnswer = function (key, question) {
+		var myanswer = firebase.database().ref('TextAnswers/' + key + '/answer' + '/' + firebase.auth().currentUser.uid);
+		myanswer.on('value', function (snapshot) {
+			if (snapshot.val()) {
+				localStorage.setItem("previoustextanswer", snapshot.val()['answer']);
+			} else {
+				localStorage.setItem("previoustextanswer", '');
+			}
+		})
+		localStorage.setItem("questionkey", key);
+		localStorage.setItem("question", question);
+		setTimeout(function () {
+			window.location.href = './viewquestion/submittextanswer.html';
+		}, 1000);
+	}
+
+	//save current selected Dropdown type Question to localstorage
+	$scope.goDropdownSubmitAnswer=function(key,question){
+		var myanswer = firebase.database().ref('DropdownAnswers/'+key+'/answer'+'/'+firebase.auth().currentUser.uid);
+			myanswer.on('value', function(snapshot) {
+			if(snapshot.val()){
+				localStorage.setItem("previousdropdownanswer", snapshot.val()['answer']);
+			}else{
+				localStorage.setItem("previousdropdownanswer", '');
+			}
+		})
+		localStorage.setItem("questionkey", key);
+		localStorage.setItem("question", question);
+		setTimeout(function(){
+			window.location.href = './viewquestion/submitdropdownanswer.html';
+		},1000);
+	}
+
+
+	$scope.goSlideSubmitAnswer=function(key,question){
+		var myanswer = firebase.database().ref('SlideAnswers/'+key+'/answer'+'/'+firebase.auth().currentUser.uid);
+		myanswer.on('value', function(snapshot) {
+			if(snapshot.val()){
+				localStorage.setItem("currentmyslideanswer", snapshot.val()['answer']);
+				localStorage.setItem("currentmyslideanswerval", snapshot.val()['answerval']);
+			}else{
+				localStorage.setItem("currentmyslideanswer", '');
+			}
+		})
+		localStorage.setItem("questionkey", key);
+		localStorage.setItem("question", question);
+		setTimeout(function(){
+			window.location.href = './viewquestion/submitslideanswer.html';
+		},1000);
+	}
+	//=================================== end of copy from angular-type-script.js ===============================================
+
 	///////////////////////////////////////////////////////- Country Languages-///////////////////////////////////////////////////////////////////////////////////////////////
 	$scope.countries = [
 		{ name: 'Afghanistan', code: 'AF' },

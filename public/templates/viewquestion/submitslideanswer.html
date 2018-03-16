@@ -80,7 +80,8 @@
 		<canvas id="pieChartforSlide2" style="width:100%;height:100%;" ng-show="submitAnswerDisableKey_slide"></canvas>
 		<md-input-container flex>
 			<button class="btn btn-primary" style="margin-left:30%;width:20%;" ng-click="saveslideanswer()" ng-disabled="submitAnswerDisableKey_slide">Submit</button>
-			<a class="btn btn-link" href="./viewSlide.html" style="margin-left:10%">Back</a>
+			<!-- <a class="btn btn-link" href="./viewSlide.html" style="margin-left:10%">Back</a> -->
+			<a class="btn btn-link" href="javascript:history.back()" style="margin-left:10%">Back</a>
 			<a class="btn btn-link" href="./viewClassSlideanswer.html" style="margin-left:10%" ng-show="submitAnswerDisableKey_slide">Next</a>
 		</md-input-container>
 

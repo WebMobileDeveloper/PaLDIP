@@ -77,7 +77,8 @@
 	<div class="row">
 		<md-input-container flex>
 			<button class="btn btn-primary" style="margin-left:30%;width:20%;" ng-click="savedigitanswer()" ng-disabled="submitAnswerDisableKey_digit">Submit</button>
-			<a class="btn btn-link" href="./viewdigit.html" style="margin-left:10%">Back</a>
+			<!-- <a class="btn btn-link" href="./viewdigit.html" style="margin-left:10%">Back</a> -->
+			<a class="btn btn-link" href="javascript:history.back()" style="margin-left:10%">Back</a>
 			<a class="btn btn-link" ng-click="nextpage_digit()" style="margin-left:10%" ng-show="submitAnswerDisableKey_digit">Next</a>
 		</md-input-container>
 	</div>
