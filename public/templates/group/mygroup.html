@@ -2,6 +2,7 @@
 <html data-ng-app="DemoApp">
 
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 
 	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
@@ -43,28 +44,28 @@
 	</nav>
 	<div class="main" ng-init="getgroups()">
 
-		<div class="row" style="background-color: palevioletred;width:110%">
+		<div class="row" style="background-color: palevioletred;width:100%">
 
-			<div class="col-md-6 col-md-offset-1 title texteffect" style="font-size: 30px;color:white">
+			<div class="col-md-6 title texteffect" style="font-size: 30px;color:white">
 				<md-input-container flex>
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Group Name</div>
 				</md-input-container>
 			</div>
-			<div class="col-md-4 qtdetails title texteffect" style="font-size: 30px;color:white">
+			<div class="col-md-6 qtdetails title texteffect" style="font-size: 30px;color:white">
 				<md-input-container flex>
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Key</div>
 				</md-input-container>
 			</div>
 		</div>
 
-		<div class="row" ng-repeat="obj in groups" style="background-color: lightgray;margin-top: 2px;width:110%">
+		<div class="row" ng-repeat="obj in groups" style="background-color: lightgray;margin-top: 2px;width:100%">
 
-			<div class="col-md-6 col-md-offset-1 groupdetails roweffect">
+			<div class="col-md-6 groupdetails roweffect">
 				<md-input-container flex>
 					<div style="margin-top:4px;" ng-click="gotoGroupDetails(obj)">&nbsp;&nbsp;&nbsp;{{obj.groupname}}</div>
 				</md-input-container>
 			</div>
-			<div class="col-md-3 qtdetails groupkey roweffect">
+			<div class="col-md-5 qtdetails groupkey roweffect">
 				<md-input-container flex>
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.key}}</div>
 				</md-input-container>
@@ -115,6 +116,11 @@
 		color: #fcad4e;
 	}
 
+	.row {
+		margin-right: 0px;
+		margin-left: 0px;
+	}
+
 	.loader {
 		border: 16px solid #f3f3f3;
 		border-radius: 50%;
@@ -162,11 +168,13 @@
 		font-family: "Comic Sans MS", cursive, sans-serif;
 		text-shadow: 3px 4px #e6b3ff;
 		font-weight: bold;
+		/* padding-right: 0px;
+		padding-left: 0px; */
 	}
 
-	.main {
+	/* .main {
 		width: calc(100% - 50px);
-	}
+	} */
 </style>
 
 </html>

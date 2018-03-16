@@ -67,18 +67,15 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	$scope.getgroups = function () {
 		setTimeout(function () {
-			var groupdata = firebase.database().ref('Groups/' + firebase.auth().currentUser.uid);
+			var uid = firebase.auth().currentUser.uid;
+			var groupdata = firebase.database().ref('Groups/' + uid);
 			groupdata.on('value', function (snapshot) {
 				$scope.groups = [];
-				var j = 0;
 				snapshot.forEach(function (childSnapshot) {
-					$scope.groups[j] = { groupname: childSnapshot.val()['groupname'], key: childSnapshot.key }
-					j++;
+					$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
 				});
 				$scope.safeApply();
 			});
-
-
 		}, 1000)
 
 	}
@@ -152,56 +149,55 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//delete group
 	$scope.deletegroup = function (group) {
-		firebase.database().ref('Groups/' + firebase.auth().currentUser.uid + '/' + group.key).remove().then(function () {
+		var key = group.key.split("/")[0];
+		firebase.database().ref('Groups/' + firebase.auth().currentUser.uid + '/' + key).remove().then(function () {
 			$scope.success('Removed Successfully!')
 			$scope.safeApply()
 		});
 	}
 	//add group to the student
 	$scope.JoinGroup = function () {
-		console.log(firebase.auth().currentUser.uid);
-		var groupcode = $scope.groupcode;//Questions
+		var groupcode = $scope.groupcode.split("/")[0];  //Questions
 		var rootRef = firebase.database().ref();
 		var storesRef = rootRef.child('StudentGroups/' + firebase.auth().currentUser.uid);
-		var newStoreRef = storesRef.push();//Add record to Question table in fireabse
-		newStoreRef.set(groupcode).then(function () {
-			$scope.success('Group is saved successfully!')
-			$scope.safeApply();
-			setTimeout(function () {
-				$scope.reload()
-			}, 500);
-		})
-	}
-	//Discriminate
-	$scope.discrimination = function () {
-		var existinggroup = firebase.database().ref('Groups');
-		var flag = 0;
-		existinggroup.on('value', function (snapshot) {
 
-			snapshot.forEach(function (childSnapshot) {
-				var key = childSnapshot.key;
-				var existinggroup = firebase.database().ref('Groups/' + key);
-				existinggroup.on('value', function (nextchild) {
-					nextchild.forEach(function (result) {
-						if ($scope.groupcode == result.key) {
-							flag = 1;
-						}
-					})
+		storesRef.orderByValue().equalTo(groupcode).once("value", snapshot => {
+			const groupChild = snapshot.val();
+			if (groupChild) {  // if exists				
+				$scope.error("You are alread joined this group.\n please select other group.");
+				$scope.safeApply();
+			} else {
+				var newStoreRef = storesRef.push();//Add record to Question table in fireabse
+				newStoreRef.set(groupcode).then(function () {
+					$scope.success('Group is saved successfully!')
+					$scope.safeApply();
+					// 
 				})
-			});
-			setTimeout(function () {
-				if (flag == 0) {
-					$scope.error('Invalid GroupCode!')
-					$scope.safeApply()
-					return;
-				} else {
-					$scope.JoinGroup();
-					$scope.safeApply()
-				}
-
-			}, 2000)
+			}
 		});
 	}
+
+	//Discriminate
+	$scope.discrimination = function () {
+		var groupcode = $scope.groupcode.split("/")[0];
+		var teacher_id = $scope.groupcode.split("/")[1];
+
+		var existinggroup = firebase.database().ref('Groups').child(teacher_id).child(groupcode);
+		var flag = 0;
+		existinggroup.on('value', function (snapshot) {
+			const groupChild = snapshot.val();
+			if (groupChild) {  // if exists				
+				$scope.JoinGroup();
+				$scope.safeApply()
+			} else {
+				$scope.error('Invalid GroupCode!')
+				$scope.safeApply()
+				return;
+			}
+		});
+	}
+
+
 	//get student group
 	$scope.getStudentGroups = function () {
 		setTimeout(function () {
@@ -227,7 +223,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							}
 						});
 					});
-				});				
+				});
 			});
 			setTimeout(function () {
 				$scope.safeApply();
