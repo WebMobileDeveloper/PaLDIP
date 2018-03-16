@@ -200,35 +200,39 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 	//get student group
 	$scope.getStudentGroups = function () {
-		setTimeout(function () {
-			$scope.studentgroups = [];
-			// $scope.studentgroupnames = [];
-			// $scope.studentgroupQuestionSets = [];
-			var j = 0;
-			var groupdata = firebase.database().ref('StudentGroups/' + firebase.auth().currentUser.uid);
 
-			groupdata.on('value', function (snapshot) {
-				snapshot.forEach(function (childSnapshot) {
-					var group_key = childSnapshot.val();
-					var groupname = firebase.database().ref('Groups');
-					groupname.on('value', function (snapshot) {
-						snapshot.forEach(function (namechild) {
-							if (namechild.val()[group_key]) {
-								$scope.studentgroups.push({
-									group_id: group_key,
-									groupname: namechild.val()[group_key]['groupname'],
-									QuestionSets: namechild.val()[group_key]['QuestionSets'],
-								});
-								$scope.safeApply();
-							}
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				var uid = user.uid;
+				$scope.studentgroups = [];
+				var j = 0;
+				var groupdata = firebase.database().ref('StudentGroups/' + uid);
+				groupdata.on('value', function (snapshot) {
+					snapshot.forEach(function (childSnapshot) {
+						var group_key = childSnapshot.val();
+						var groupname = firebase.database().ref('Groups');
+						groupname.on('value', function (snapshot) {
+							snapshot.forEach(function (namechild) {
+								if (namechild.val()[group_key]) {
+									$scope.studentgroups.push({
+										group_id: group_key,
+										groupname: namechild.val()[group_key]['groupname'],
+										QuestionSets: namechild.val()[group_key]['QuestionSets'],
+									});
+									$scope.safeApply();
+								}
+							});
 						});
 					});
 				});
-			});
-			setTimeout(function () {
-				$scope.safeApply();
-			}, 5000);
-		}, 1000)
+			} else {
+				// No user is signed in.
+			}
+		});
+
+
+
+
 	};
 	//go to details of student group
 	$scope.studentGroupDetails = function (obj) {
