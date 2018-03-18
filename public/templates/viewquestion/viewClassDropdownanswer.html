@@ -44,34 +44,45 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="main" ng-init="viewClassDropdownanswer()">
+	<div class="content">
+		<div class="main" ng-init="viewClassDropdownanswer()">
 
-		<div class="row">
+			<div class="row">
+				<md-input-container flex>
+					<label style="font-size:20px;">Your Answer</label>
+					<input rows="3" style="border-radius:5px;font-size:20px" readonly="true" ng-model="currentmydropdownanswer">
+					</input>
+				</md-input-container>
+			</div>
 
-			<md-input-container flex>
-				<label style="font-size:20px;">Your Answer</label>
-				<input rows="3" style="border-radius:5px;font-size:20px" readonly="true" ng-model="currentmydropdownanswer">
-				</input>
-			</md-input-container>
+			<div class="row chart-row">
 
+				<canvas id="pieChart" style="width:300px;height:300px; "></canvas>
+
+			</div>
+			<div class="row button-row">
+				<div class="col-md-5">
+					<a class="btn btn-link" href="javascript:history.back()">Back</a>
+				</div>
+
+				<div class="col-md-5 col-md-offset-2">
+					<a class="btn btn-link" href="../questions for students.html">Select Question</a>
+				</div>
+			</div>
+			<div class="row button-row">
+				<div class="col-md-5">
+					<button class="btn" ng-class="appliedClass(selectedMain)" ng-click="clickMain()">This Group</button>
+				</div>
+				<div class="col-md-5 col-md-offset-2">
+					<button class="btn " ng-class="appliedClass(selectedOther)" ng-click="clickOther()">All Other Groups</button>
+				</div>
+			</div>
 		</div>
 
-		<div class="row">
-
-			<canvas id="pieChart" style="width:300px;height:300px; "></canvas>
-
-		</div>
-		<div class="row">
-			<md-input-container flex>
-				<a class="btn btn-link" href="javascript:history.back()" style="margin-left:20%;width:150px">Back</a>
-				<a class="btn btn-link" href="../questions for students.html" style="margin-left:5%;width:150px">Select Question</a>
-			</md-input-container>
-		</div>
 	</div>
-
 </body>
 <style>
-	.main {
+	/* .main {
 		position: relative;
 		top: 40%;
 		left: 50%;
@@ -83,15 +94,91 @@
 		border-radius: 5px;
 		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
 		margin-bottom: 25px;
+	} */
+
+	.content {
+		width: 100%;
+	}
+
+	.main {
+		position: relative;
+		width: 650px;
+		margin: 0px auto;
+		padding: 50px 20px 50px 20px;
+		/* -webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%); */
+		border-radius: 5px;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+		margin-bottom: 25px;
+	}
+
+	.chart-row {
+		margin-right: 20px;
+	}
+
+	.button-row {
+		margin: 10px 10%;
+	}
+
+	button {
+		width: 100%;
+		border: solid 1px #2F528F !important;
+		color: white;
+		font-size: 1.2em !important;
+		font-weight: 600 !important;
+	}
+
+	button.selected {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:hover {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:focus {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.deselected {
+		background-color: #8FAADC;
+		color: white;
+	}
+
+	button.deselected:hover {
+		background-color: #8FAADC;
+		color: white;
+	}
+
+	button.deselected:focus {
+		background-color: #8FAADC;
+		color: white;
+	}
+
+	/* .btn-primary:hover {
+		color: #fff;
+		background-color: initial;
+		border-color: initial;
+	} */
+
+	a {
+		width: 100%;
 	}
 
 	md-input-container {
 		width: 80%;
-		margin-left: 10%
+		margin-left: 10%;
 	}
 
 	.checked {
 		color: orange;
+	}
+
+	#pieChart {
+		margin-right: 100px;
 	}
 </style>
 <script>

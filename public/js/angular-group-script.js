@@ -87,7 +87,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	//get sets in the group and total set lists
 	$scope.getQuesionSets = function () {//
 		setTimeout(function () {
-			var groupkey = localStorage.getItem("groupkey");
+			var groupkey = localStorage.getItem("groupkey").split("/")[0];			
 			var setIngroupdata = firebase.database().ref('Groups/' + firebase.auth().currentUser.uid + '/' + groupkey + '/QuestionSets');
 			setIngroupdata.on('value', function (snapshot) {
 				$scope.setsInGroup = snapshot.val();
@@ -127,13 +127,15 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//Function to save Question sets in the group
 	$scope.saveGroupSet = function () {
+		
 		if ($scope.setsInGroup == '')
 			alert('Please click set to add!')
 		else {
 			var rootRef = firebase.database().ref();
 			var updates = {};
 			var uid = firebase.auth().currentUser.uid;
-			var groupkey = localStorage.getItem("groupkey");
+			var groupkey = localStorage.getItem("groupkey").split("/")[0];
+			console.log(groupkey)
 			updates['/Groups/' + uid + '/' + groupkey + '/QuestionSets'] = $scope.setsInGroup;
 
 
@@ -249,7 +251,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			console.log(child)
 			setnames[k] = child.setname;
 			setkey[k] = child.key;
-			k++
+			k++;
 		})
 		setTimeout(function () {
 			localStorage.setItem("studentgroupsetkey", setkey);
@@ -265,8 +267,11 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var studentgroupsetname = localStorage.getItem("studentgroupsetname");
 		studentgroupsetkey = studentgroupsetkey.split(',')
 		studentgroupsetname = studentgroupsetname.split(',')
+		
 		$scope.studentgroupsetkey = studentgroupsetkey;
 		$scope.studentgroupsetname = studentgroupsetname;
+		console.log($scope.studentgroupkey);
+		console.log($scope.studentgroupsetkey);
 		$scope.safeApply()
 	}
 	$scope.questions = function (val) {
