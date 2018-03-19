@@ -7,6 +7,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.questionplan = '';
 	$scope.hideindex = false;
 	$scope.deletingprogresskey = false;
+
+
+
+
 	$scope.warning = function (msg) {
 		toaster.pop('warning', "Warning", msg, 3000);
 	};
@@ -51,19 +55,32 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			}, 500);
 		})
 	}
-	$scope.creatQuestionSet = function () {
+	$scope.creatQuestionSet = function () {		
+		if (!$scope.setname) {
+			$scope.error("Please insert Question Set name.");
+			return;
+		}
 		var userid = firebase.auth().currentUser.uid;
-		var Setdetails = { setname: $scope.setname };//Questions
-		var rootRef = firebase.database().ref();
-		var storesRef = rootRef.child('QuestionSets');
-		var newStoreRef = storesRef.push();//Add record to Question table in fireabse
-		newStoreRef.set(Setdetails).then(function () {
-			$scope.success('Question Set is created successfully!')
-			$scope.safeApply();
-			setTimeout(function () {
-				$scope.reload()
-			}, 500);
-		})
+		var Setdetails = { setname: $scope.setname, creator: userid };		//Questions
+		var storesRef = firebase.database().ref().child('QuestionSets');
+
+		storesRef.orderByChild('setname').equalTo($scope.setname).once('value', function (snapshot) {				
+			if (snapshot.val()) { 				// same setname is exist
+				$scope.error("This Question Set name is already exist.");
+				$scope.safeApply();
+				return;
+			} else {
+				var newStoreRef = storesRef.push();									//Add record to Question table in fireabse
+				newStoreRef.set(Setdetails).then(function (data) {
+					$scope.success('Question Set is created successfully!');					
+					localStorage.setItem("questionsetName",$scope.setname);
+					$scope.safeApply();
+					setTimeout(function () {
+						window.location.href = '../create question by type.html';
+					}, 1000)
+				})			
+			}
+		});
 	}
 	$scope.getgroups = function () {
 		setTimeout(function () {
@@ -86,67 +103,65 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//get sets in the group and total set lists
 	$scope.getQuesionSets = function () {//
-		setTimeout(function () {
-			var groupkey = localStorage.getItem("groupkey").split("/")[0];			
-			var setIngroupdata = firebase.database().ref('Groups/' + firebase.auth().currentUser.uid + '/' + groupkey + '/QuestionSets');
-			setIngroupdata.on('value', function (snapshot) {
-				$scope.setsInGroup = snapshot.val();
-				$scope.grouptitle = localStorage.getItem("groupname");
-				var setdata = firebase.database().ref('QuestionSets');
-				setdata.on('value', function (snapshot) {
-					$scope.questionSetLists = [];
-					var i = 0;
-					snapshot.forEach(function (child) {
-						var exitflag = 0;
-						try {
-							for (var exisindex = 0; exisindex < $scope.setsInGroup.length; exisindex++) {
-								if ($scope.setsInGroup[exisindex]['key'] == child.key) exitflag = 1;
+		$scope.createdByMe = true;
+		$scope.setsInGroup = {};
+		$scope.grouptitle = localStorage.getItem("groupname");
+		var groupkey = localStorage.getItem("groupkey").split("/")[0];
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				var uid = user.uid;
+				var setIngroupdata = firebase.database().ref('Groups/' + uid + '/' + groupkey + '/QuestionSets');
+				setIngroupdata.on('value', function (snapshot) {
+					snapshot.forEach(function (set) {
+						$scope.setsInGroup[set.val()['key']] = set.val();
+					});
+					var setdata = firebase.database().ref('QuestionSets');
+					setdata.on('value', function (snapshot) {
+						$scope.questionSetLists = {};
+						snapshot.forEach(function (child) {
+							var existInGroup = ($scope.setsInGroup[child.key]) ? true : false;
+							var createdByMe = (uid == child.val()['creator']) ? true : false;
+							$scope.questionSetLists[child.key] = {
+								setname: child.val()['setname'],
+								key: child.key,
+								existInGroup: existInGroup,
+								createdByMe: createdByMe,
 							}
-						} catch (e) { }
-						if (exitflag != 1)
-							$scope.questionSetLists[i] = { setname: child.val()['setname'], key: child.key };
-						i++;
-					})
-
-					$scope.safeApply();
+						})
+						$scope.safeApply();
+					});
 				});
-			});
-		}, 1000)
-
+			} else {
+				$scope.error("You need to login!");
+			}
+		});
+	}
+	$scope.changeCretedByMe = function (value) {
+		$scope.createdByMe = value;
+		$scope.safeApply();
 	}
 	//add set to group
 	$scope.addtogroup = function (set) {
-		if (!$scope.setsInGroup) $scope.setsInGroup = [];
-		$scope.setsInGroup.push(set);
-		$scope.questionSetLists.splice($scope.questionSetLists.indexOf(set), 1);
+		$scope.setsInGroup[set.key] = { setname: set.setname, key: set.key };
+		$scope.questionSetLists[set.key].existInGroup = true;
 	}
 	//remove set from group
 	$scope.removefromgroup = function (set) {
-		$scope.questionSetLists.push(set);
-		$scope.setsInGroup.splice($scope.setsInGroup.indexOf(set), 1);
+		$scope.questionSetLists[set.key].existInGroup = false;
+		delete $scope.setsInGroup[set.key];
 	}
 	//Function to save Question sets in the group
 	$scope.saveGroupSet = function () {
-		
-		if ($scope.setsInGroup == '')
-			alert('Please click set to add!')
-		else {
-			var rootRef = firebase.database().ref();
-			var updates = {};
-			var uid = firebase.auth().currentUser.uid;
-			var groupkey = localStorage.getItem("groupkey").split("/")[0];
-			console.log(groupkey)
-			updates['/Groups/' + uid + '/' + groupkey + '/QuestionSets'] = $scope.setsInGroup;
+		var rootRef = firebase.database().ref();
+		var updates = {};
+		var uid = firebase.auth().currentUser.uid;
+		var groupkey = localStorage.getItem("groupkey").split("/")[0];
 
-
-			rootRef.update(updates).then(function () {
-				$scope.success('Question Sets are imported successfully!')
-				$scope.safeApply();
-				setTimeout(function () {
-					$scope.reload()
-				}, 500);
-			})
-		}
+		updates['/Groups/' + uid + '/' + groupkey + '/QuestionSets'] = $scope.setsInGroup;
+		rootRef.update(updates).then(function () {
+			$scope.success('Question Sets are imported successfully!')
+			$scope.safeApply();
+		})
 
 	}
 	//delete group
@@ -228,7 +243,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					});
 				});
 			} else {
-				// No user is signed in.
+				$scope.error("You need to login!");
 			}
 		});
 
@@ -267,7 +282,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var studentgroupsetname = localStorage.getItem("studentgroupsetname");
 		studentgroupsetkey = studentgroupsetkey.split(',')
 		studentgroupsetname = studentgroupsetname.split(',')
-		
+
 		$scope.studentgroupsetkey = studentgroupsetkey;
 		$scope.studentgroupsetname = studentgroupsetname;
 		console.log($scope.studentgroupkey);

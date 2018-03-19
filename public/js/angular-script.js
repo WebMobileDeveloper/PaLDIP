@@ -329,7 +329,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				questionSets[key] = childData['setname'];
 				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
 			});
-			console.log(questionSets);
 			var qtdata = firebase.database().ref('Questions');
 			qtdata.on('value', function (snapshot) {
 
@@ -669,12 +668,12 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			$scope.error('You have to login!');
 		}
 	}
-	$scope.nextpage_text=function(){
-		if(firebase.auth().currentUser){
-			var updates={};
-			localStorage.setItem("currentmytextanswer",$scope.textanswer);
+	$scope.nextpage_text = function () {
+		if (firebase.auth().currentUser) {
+			var updates = {};
+			localStorage.setItem("currentmytextanswer", $scope.textanswer);
 			window.location.href = './viewClassTextanswer.html';
-		}else{
+		} else {
 			$scope.error('You have to login!');
 		}
 	}
@@ -1113,12 +1112,16 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//Get Question Sets
 	$scope.getsets = function () {
+		var questionsetName = localStorage.getItem('questionsetName');	
 		var qtsets = firebase.database().ref('QuestionSets');
 		$scope.QuestionSets = [];
 		qtsets.on('value', function (snapshot) {
 			var j = 0;
 			snapshot.forEach(function (childSnapshot) {
 				$scope.QuestionSets[j] = { val: childSnapshot.val(), key: childSnapshot.key }
+				if (childSnapshot.val().setname == questionsetName) {
+					$scope.questionset = childSnapshot.key;
+				};
 				j++;
 			});
 			$scope.safeApply()
@@ -1179,38 +1182,38 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 
 	//save current selected Dropdown type Question to localstorage
-	$scope.goDropdownSubmitAnswer=function(key,question){
-		var myanswer = firebase.database().ref('DropdownAnswers/'+key+'/answer'+'/'+firebase.auth().currentUser.uid);
-			myanswer.on('value', function(snapshot) {
-			if(snapshot.val()){
+	$scope.goDropdownSubmitAnswer = function (key, question) {
+		var myanswer = firebase.database().ref('DropdownAnswers/' + key + '/answer' + '/' + firebase.auth().currentUser.uid);
+		myanswer.on('value', function (snapshot) {
+			if (snapshot.val()) {
 				localStorage.setItem("previousdropdownanswer", snapshot.val()['answer']);
-			}else{
+			} else {
 				localStorage.setItem("previousdropdownanswer", '');
 			}
 		})
 		localStorage.setItem("questionkey", key);
 		localStorage.setItem("question", question);
-		setTimeout(function(){
+		setTimeout(function () {
 			window.location.href = './viewquestion/submitdropdownanswer.html';
-		},1000);
+		}, 1000);
 	}
 
 
-	$scope.goSlideSubmitAnswer=function(key,question){
-		var myanswer = firebase.database().ref('SlideAnswers/'+key+'/answer'+'/'+firebase.auth().currentUser.uid);
-		myanswer.on('value', function(snapshot) {
-			if(snapshot.val()){
+	$scope.goSlideSubmitAnswer = function (key, question) {
+		var myanswer = firebase.database().ref('SlideAnswers/' + key + '/answer' + '/' + firebase.auth().currentUser.uid);
+		myanswer.on('value', function (snapshot) {
+			if (snapshot.val()) {
 				localStorage.setItem("currentmyslideanswer", snapshot.val()['answer']);
 				localStorage.setItem("currentmyslideanswerval", snapshot.val()['answerval']);
-			}else{
+			} else {
 				localStorage.setItem("currentmyslideanswer", '');
 			}
 		})
 		localStorage.setItem("questionkey", key);
 		localStorage.setItem("question", question);
-		setTimeout(function(){
+		setTimeout(function () {
 			window.location.href = './viewquestion/submitslideanswer.html';
-		},1000);
+		}, 1000);
 	}
 	//=================================== end of copy from angular-type-script.js ===============================================
 

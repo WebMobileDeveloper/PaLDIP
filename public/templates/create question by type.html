@@ -4,11 +4,18 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
 	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<!--<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.css">-->
+
+	<!-- Angular Material Dependencies -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
 	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="../app.js"></script>
 	<script src="../js/angular-script.js"></script>
@@ -21,10 +28,10 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
 
-	<title>Teacher</title>
+	<title>Question Details</title>
 </head>
 
-<body data-ng-controller="MainCtrl" ng-init="getqts()">
+<body data-ng-controller="MainCtrl">
 	<nav _ngcontent-c5="" class="navbar navbar-inverse">
 		<div _ngcontent-c5="" class="container-fluid">
 			<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
@@ -36,66 +43,56 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="main">
+	<div class="container">
 		<div class="row">
-			<div class="col-md-6 col-md-offset-3">
-				<md-input-container flex>
-					<a class="btn btn-default" href="./group/mygroup.html">
-						<h2>Groups</h2>
-					</a>
-				</md-input-container>
-			</div>
-		</div>
-		<div class="row" style="margin-top:5%">
-			<div class="col-md-6 col-md-offset-3" style="text-align: middle">
-				<md-input-container flex>
-					<a class="btn btn-default" href="./questionSets.html">
-						<h2>Questions</h2>
-					</a>
-				</md-input-container>
-			</div>
-		</div>
+			<div class="col-md-6 col-md-offset-3 box">
+				<h2 class="page-header">Question Type Choice</h2>
+				<a href="./question details.html">
+					<button class="btn btn-primary" onclick="">Feedback Type</button>
+				</a>
+				<a href="./createtypesquestion/digit_detail.html">
+					<button class="btn btn-primary">Digit Type</button>
+				</a>
+				<a href="./createtypesquestion/text_detail.html">
+					<button class="btn btn-primary">Text Type</button>
+				</a>
+				<a href="./createtypesquestion/dropdown_detail.html">
+					<button class="btn btn-primary">Dropdown Type</button>
+				</a>
+				<a href="./createtypesquestion/slide_detail.html">
+					<button class="btn btn-primary">Slider Type</button>
+				</a>
+				<hr>
+				<div class="row nav-row">
+					<div class="col-md-4 col-md-offset-2">
+						<a href="javascript:history.back()">Back</a>
+					</div>
+					<div class="col-md-4">
+						<a href="./questionSets.html">Question Sets</a>
+					</div>
+				</div>
 
+			</div>
+		</div>
 	</div>
 </body>
 <style>
-	md-input-container {
-		margin-left: 25%;
-		margin-top: 10%;
-		width: 60%;
-		height: 150px;
-		background-color: #294c84;
-		border-color: #91cdf7;
-		font-weight: bold;
-		border-radius: 10px;
-		box-shadow: 2px 3px gray;
-
+	.box {
+		box-shadow: 0 0 7px hsla(0, 0%, 59%, .8);
+		text-align: center;
+		margin-top: 50px;
+		padding: 20px 0px 50px 0px;
 	}
 
-	.btn {
-		width: 100%;
-		height: 145px;
-		background: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(255, 0, 0, 1));
-		border-color: #294c84;
-		color: white;
-		font-weight: bold;
-
+	button {
+		width: 50%;
+		margin: 10px auto;
+		font-size: 1.5em !important;
 	}
-
-	h2 {
-		margin-top: 8%;
-	}
-
-	md-input-container:hover {
-		background-color: white
-	}
-
-	.btn:hover {
-		background-color: #22e878
-	}
-
-	.main {
-		width: calc(100% - 50px);
+	.nav-row{
+		padding-top: 20px;
+		padding-bottom: 20px;
+		font-size: 1.2em;
 	}
 </style>
 

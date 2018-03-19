@@ -942,16 +942,19 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	//Get Question Sets
 
 	$scope.getsets = function () {
+		var questionsetName = localStorage.getItem('questionsetName');	
 		var qtsets = firebase.database().ref('QuestionSets');
 		$scope.QuestionSets = [];
 		qtsets.on('value', function (snapshot) {
 			var j = 0;
 			snapshot.forEach(function (childSnapshot) {
-				$scope.QuestionSets[j] = { val: childSnapshot.val(), key: childSnapshot.key }
+				$scope.QuestionSets[j] = { val: childSnapshot.val(), key: childSnapshot.key };
+				if (childSnapshot.val().setname == questionsetName) {
+					$scope.questionset = childSnapshot.key;
+				};
 				j++;
 			});
-			console.log($scope.QuestionSets)
-			$scope.safeApply()
+			$scope.safeApply();
 		});
 	}
 });
