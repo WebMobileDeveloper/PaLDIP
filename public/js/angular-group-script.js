@@ -9,8 +9,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.deletingprogresskey = false;
 
 
-
-
 	$scope.warning = function (msg) {
 		toaster.pop('warning', "Warning", msg, 3000);
 	};
@@ -41,6 +39,74 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		firebase.auth().signOut();
 		window.location.href = '../../index.html';
 	}
+
+
+	//   +++++++++++++++++++++++++   Start of Auto complete chips              ++++++++++++++++++++++++++++++++++++++++++++++++
+	//   ++++++++++++++++++++++++++++++++++++
+
+
+
+    /**
+     * Return the proper object when the append is called.
+     */
+	$scope.transformChip = function (chip) {
+		// If it is an object, it's already a known chip
+		if (angular.isObject(chip)) {
+			return chip;
+		}
+
+		// Otherwise, create a new one
+		return { name: chip, type: 'new' };
+	}
+
+    /**
+     * Search for vegetables.
+     */
+	$scope.querySearch = function (query) {
+		var results = query ? $scope.originTags.filter($scope.createFilterFor(query)) : [];
+		return results;
+	}
+
+    /**
+     * Create filter function for a query string
+     */
+	$scope.createFilterFor = function (query) {
+		var lowercaseQuery = angular.lowercase(query);
+
+		return function filterFn(tag) {
+			return (tag.lowername.indexOf(lowercaseQuery) === 0);
+		};
+
+	}
+
+	$scope.loadTags = function () {
+		$scope.searchText = null;
+		$scope.originTags = [];
+		$scope.selectedTags = [];
+		//$scope.transformChip = $scope.transformChip;
+
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				var uid = user.uid;
+				var tagRef = firebase.database().ref('Tags');
+				tagRef.once('value', function (snapshot) {
+					snapshot.forEach(function (tag) {
+						$scope.originTags.push({ 'name': tag.val(), 'type': 'origin', 'lowername': tag.val().toLowerCase() })
+					});
+					$scope.safeApply();
+				});
+			} else {
+				$scope.error("You need to login!");
+			}
+		});
+	}
+
+
+	//   +++++++++++++++++++++++++   end of Auto complete chips              ++++++++++++++++++++++++++++++++++++++++++++++++
+	//   ++++++++++++++++++++++++++++++++++++
+
+
+
 	$scope.creatgroup = function () {
 		var userid = firebase.auth().currentUser.uid;
 		var groupdetails = { groupname: $scope.groupname };//Questions
@@ -55,16 +121,26 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			}, 500);
 		})
 	}
-	$scope.creatQuestionSet = function () {		
+	$scope.creatQuestionSet = function () {
 		if (!$scope.setname) {
 			$scope.error("Please insert Question Set name.");
 			return;
 		}
 		var userid = firebase.auth().currentUser.uid;
-		var Setdetails = { setname: $scope.setname, creator: userid };		//Questions
+		var tags = "";
+		$scope.selectedTags.forEach(function (tagObj) {
+			if (tags == "") {
+				tags = tagObj.name;
+			} else {
+				tags += "," + tagObj.name;
+			}
+		});
+
+		var Setdetails = { setname: $scope.setname, creator: userid, tags: tags };		//Questions
+		
 		var storesRef = firebase.database().ref().child('QuestionSets');
 
-		storesRef.orderByChild('setname').equalTo($scope.setname).once('value', function (snapshot) {				
+		storesRef.orderByChild('setname').equalTo($scope.setname).once('value', function (snapshot) {
 			if (snapshot.val()) { 				// same setname is exist
 				$scope.error("This Question Set name is already exist.");
 				$scope.safeApply();
@@ -72,13 +148,17 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			} else {
 				var newStoreRef = storesRef.push();									//Add record to Question table in fireabse
 				newStoreRef.set(Setdetails).then(function (data) {
-					$scope.success('Question Set is created successfully!');					
-					localStorage.setItem("questionsetName",$scope.setname);
+					var tagRef = firebase.database().ref('Tags');
+					$scope.selectedTags.forEach(function (tagObj) {
+						if (tagObj.type == 'new') tagRef.push(tagObj.name);
+					});
+					$scope.success('Question Set is created successfully!');
+					localStorage.setItem("questionsetName", $scope.setname);
 					$scope.safeApply();
 					setTimeout(function () {
 						window.location.href = '../create question by type.html';
 					}, 1000)
-				})			
+				})
 			}
 		});
 	}

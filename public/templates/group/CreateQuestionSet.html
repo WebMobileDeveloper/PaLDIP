@@ -42,6 +42,8 @@
 			</ul>
 		</div>
 	</nav>
+
+
 	<div class="main">
 
 		<div class="row qst">
@@ -49,6 +51,22 @@
 				<label>Type Question Set Name (e.g. XXX?)</label>
 				<input ng-model="setname" style="border-radius:5px;" />
 			</md-input-container>
+		</div>
+
+
+
+
+		<div class="row chip-row" ng-init="loadTags()">
+			<md-chips ng-model="selectedTags" md-autocomplete-snap="" md-transform-chip="transformChip($chip)" md-require-match="false">
+				<md-autocomplete md-search-text="searchText" md-items="item in querySearch(searchText)" md-item-text="item.name" placeholder="Search or input Tags">
+					<span md-highlight-text="searchText">{{item.name}}</span>
+				</md-autocomplete>
+				<md-chip-template>
+					<span>
+						<strong>{{$chip.name}}</strong>
+					</span>
+				</md-chip-template>
+			</md-chips>
 		</div>
 
 
@@ -67,6 +85,10 @@
 		height: 53px;
 	}
 
+	.chip-row {
+		padding: 0px 10%;
+	}
+
 	.main {
 		position: absolute;
 		top: 50%;
@@ -83,6 +105,25 @@
 	md-input-container {
 		width: 80%;
 		margin-left: 10%
+	}
+
+	.md-chips .md-chip-input-container md-autocomplete input {
+		width: 100%;
+	}
+
+	/* .md-autocomplete-suggestions-container li.selected {
+		background: #b7e2fc;
+	} */
+
+	.md-chips md-chip {
+		border-radius: 12px;
+	}
+
+	.md-chips md-chip .md-chip-remove md-icon {
+		height: 18px;
+		width: 18px;
+		min-height: 10px;
+		min-width: 10px;
 	}
 </style>
 

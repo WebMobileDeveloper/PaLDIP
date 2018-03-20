@@ -38,6 +38,95 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		window.location.href = '../index.html';
 	}
 
+	//   +++++++++++++++++++++++++   Start of Auto complete chips              ++++++++++++++++++++++++++++++++++++++++++++++++
+	//   ++++++++++++++++++++++++++++++++++++
+
+
+
+    /**
+     * Return the proper object when the append is called.
+     */
+	$scope.transformChip = function (chip) {
+		// If it is an object, it's already a known chip
+		if (angular.isObject(chip)) {
+			return chip;
+		}
+
+		// Otherwise, create a new one
+		return { name: chip, type: 'new' };
+	}
+
+    /**
+     * Search for vegetables.
+     */
+	$scope.querySearch = function (query) {
+		var results = query ? $scope.originTags.filter($scope.createFilterFor(query)) : [];
+		return results;
+	}
+
+    /**
+     * Create filter function for a query string
+     */
+	$scope.createFilterFor = function (query) {
+		var lowercaseQuery = angular.lowercase(query);
+
+		return function filterFn(tag) {
+			return (tag.lowername.indexOf(lowercaseQuery) === 0);
+		};
+
+	}
+
+	$scope.loadTags = function () {
+		$scope.searchText = null;
+		$scope.originTags = [];
+		$scope.selectedTags = [];
+		//$scope.transformChip = $scope.transformChip;
+
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				var uid = user.uid;
+				var tagRef = firebase.database().ref('Tags');
+				tagRef.once('value', function (snapshot) {
+					snapshot.forEach(function (tag) {
+						$scope.originTags.push({ 'name': tag.val(), 'type': 'origin', 'lowername': tag.val().toLowerCase() })
+					});
+					$scope.safeApply();
+				});
+			} else {
+				$scope.error("You need to login!");
+			}
+		});
+	}
+
+	$scope.chipChanged = function () {
+		if ($scope.selectedTags.length == 0) {
+			for (const setkey in $scope.questionSetLists) {
+				$scope.questionSetLists[setkey].visibleBytag = true;
+			}
+		} else {
+			for (const setkey in $scope.questionSetLists) {
+				$scope.questionSetLists[setkey].visibleBytag = false;
+
+				if ($scope.questionSetLists[setkey].tags == undefined) continue;
+				var setTagArray = $scope.questionSetLists[setkey].tags.toLowerCase().split(',');
+				for (const tagIndex in $scope.selectedTags) {
+					var low = $scope.selectedTags[tagIndex].name.toLowerCase();
+					if (setTagArray.indexOf(low) != -1) {
+						$scope.questionSetLists[setkey].visibleBytag = true;
+						break;
+					}
+				}
+			}
+		}
+		$scope.safeApply();
+	}
+	//    end of Auto complete chips
+
+
+
+
+
+
 
 	// ==============================Question set functions=================================
 	// ===============================================================
@@ -58,6 +147,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							setname: child.val()['setname'],
 							key: child.key,
 							createdByMe: createdByMe,
+							tags: child.val()['tags'],
+							visibleBytag: true,
 						}
 					});
 					$scope.safeApply();
@@ -86,8 +177,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.feedbackTypequestions = [];
 		var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
 		qtdata.on('value', function (snapshot) {
-			snapshot.forEach(function (childSnapshot) {			
-				$scope.feedbackTypequestions.push({ value: childSnapshot.val()['question'], type: 'Feedback Type'});
+			snapshot.forEach(function (childSnapshot) {
+				$scope.feedbackTypequestions.push({ value: childSnapshot.val()['question'], type: 'Feedback Type' });
 			});
 			$scope.safeApply();
 		});
