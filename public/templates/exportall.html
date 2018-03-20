@@ -82,14 +82,14 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="obj in answers track by $index">
-					<td style="text-align:center">{{obj.mail}}</td>
-					<td style="text-align:center">{{obj.Gender}}</td>
-					<td style="text-align:center">{{obj.Age}}</td>
+					<td style="text-align:center;">{{obj.mail}}</td>
+					<td style="text-align:center;">{{obj.Gender}}</td>
+					<td style="text-align:center;">{{obj.Age}}</td>
 					<td style="text-align:center">{{obj.Profession}}</td>
 					<td style="text-align:center">{{obj.Mothertongue}}</td>
 					<td style="text-align:center">{{obj.Groupcode}}</td>
-					<td style="text-align:center">{{obj.answer}}</td>
-					<td style="text-align:center">{{obj.answer}}</td>
+					<td style="text-align:center; width:400px;">{{obj.question}}</td>
+					<td style="text-align:center; width:400px;">{{obj.answer}}</td>
 					<td style="text-align:center">{{obj.datetime}}</td>
 					<td style="text-align:center" class="detachingfield" ng-hide="hidefeedfield" ng-repeat="feed in thcols track by $index">{{obj.feedtxt[$index]}}</td>
 					<td style="text-align:center" class="detachingfield" ng-hide="hidefeedfield">{{obj.averagescore}}</td>
