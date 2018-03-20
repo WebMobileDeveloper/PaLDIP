@@ -125,7 +125,6 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 				$scope.profileinformation = [];
 				userProfile.on('value', function (snapshot) {
 					profileinformation = snapshot.val();
-					// console.log(snapshot.val())
 				});
 				//Combination
 				setTimeout(function () {
@@ -156,7 +155,6 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 				}, 1000)
 
 			});
-			console.log($scope.answers);
 		})
 	}
 

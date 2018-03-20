@@ -301,10 +301,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var uid = user.uid;
-				$scope.studentgroups = [];
 				var j = 0;
 				var groupdata = firebase.database().ref('StudentGroups/' + uid);
 				groupdata.on('value', function (snapshot) {
+					$scope.studentgroups = [];
 					snapshot.forEach(function (childSnapshot) {
 						var group_key = childSnapshot.val();
 						var groupname = firebase.database().ref('Groups');
@@ -342,15 +342,14 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var setnames = [];
 		var setkey = [];
 		var k = 0;
-		obj.QuestionSets.forEach(function (child) {
-			console.log(child)
-			setnames[k] = child.setname;
-			setkey[k] = child.key;
+		for(key in obj.QuestionSets){
+			setnames[k] = obj.QuestionSets[key].setname;
+			setkey[k] = obj.QuestionSets[key].key;
 			k++;
-		})
+		}
+		localStorage.setItem("studentgroupsetkey", setkey);
+		localStorage.setItem("studentgroupsetname", setnames);
 		setTimeout(function () {
-			localStorage.setItem("studentgroupsetkey", setkey);
-			localStorage.setItem("studentgroupsetname", setnames);
 			window.location.href = './studentGroupDetail.html';
 		}, 150);
 	}
@@ -365,12 +364,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 		$scope.studentgroupsetkey = studentgroupsetkey;
 		$scope.studentgroupsetname = studentgroupsetname;
-		console.log($scope.studentgroupkey);
-		console.log($scope.studentgroupsetkey);
 		$scope.safeApply()
 	}
 	$scope.questions = function (val) {
-		console.log(val)
 		localStorage.setItem("questionsetkey", val);
 		window.location.href = '../questions for students.html';
 	}

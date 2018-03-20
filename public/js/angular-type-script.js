@@ -680,7 +680,6 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	$scope.getSlidesqts = function () {
 		$scope.questions = [];
 		var questionsetkey = localStorage.getItem("questionsetkey");
-		console.log(questionsetkey)
 		var qtdata = firebase.database().ref('SlideQuestions').orderByChild("Set").equalTo(questionsetkey);
 		qtdata.on('value', function (snapshot) {
 
@@ -858,7 +857,6 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 		var classSlideVal = [];
 		var slideanswer = firebase.database().ref('SlideAnswers/' + $scope.questionkey + '/answer');
 		slideanswer.on('value', function (snapshot) {
-			console.log(snapshot.val())
 			var countOfanswers = snapshot.numChildren();
 
 			snapshot.forEach(function (childSnapshot) {
@@ -867,11 +865,9 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 				var answercount = childSnapshot.numChildren() / 2;
 
 				for (var k = 0; k < answercount; k++) {
-					console.log(answerval[k])
 					if (!classSlideVal[k]) classSlideVal[k] = 0;
 					classSlideVal[k] += answerval[k] * 1;
 				}
-				console.log(classSlideVal)
 			});
 
 
@@ -963,7 +959,6 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 
 			storageRef.child('img/' + imgname).getDownloadURL().then(function (url) {
 				document.querySelector('img').src = url;
-				console.log(url)
 				$scope.imgloaded = true;
 				$scope.safeApply();
 			}).catch(function (error) { })

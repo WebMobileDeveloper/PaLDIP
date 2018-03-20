@@ -187,9 +187,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	//when click login button-index.html for login
 	$scope.login = function () {
 		if ($scope.loginmail && $scope.pwd && $scope.usertype) {
-			console.log($scope.loginmail, $scope.pwd);
 			firebase.auth().signInWithEmailAndPassword($scope.loginmail, $scope.pwd).then(function (user) {
-				console.log(user);
 				var userid = user.uid;
 				var starCountRef = firebase.database().ref('Users/' + userid);
 				starCountRef.on('value', function (snapshot) {
@@ -285,7 +283,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 		// ++++++++++++++++++ get slide Type Questions ++++++++++++++++++
 		$scope.slideTypequestions = [];
-		console.log(questionsetkey)
 		var qtdata = firebase.database().ref('SlideQuestions').orderByChild("Set").equalTo(questionsetkey);
 		qtdata.on('value', function (snapshot) {
 
