@@ -103,18 +103,29 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	}
 	$scope.gettextqtsteacherside = function () {
 		$scope.questions = [];
-		var qtdata = firebase.database().ref('TextQuestions');
-		qtdata.on('value', function (snapshot) {
+		questionSets = [];
 
+		var qtSetdata = firebase.database().ref('QuestionSets');
+		qtSetdata.on('value', function (snapshot) {
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
 				var childData = childSnapshot.val();
-				//when text feedback
-				$scope.questions.push({ key: key, value: childData['question'] });
+				questionSets[key] = childData['setname'];
+				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
 			});
-			$scope.safeApply();
-		});
+			var qtdata = firebase.database().ref('TextQuestions');
+			qtdata.on('value', function (snapshot) {
 
+				snapshot.forEach(function (childSnapshot) {
+					var key = childSnapshot.key
+					var childData = childSnapshot.val();
+					//when text feedback
+					var set = childData['Set'];
+					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+				});
+				$scope.safeApply();
+			});
+		});
 	}
 
 	//save current selected Text type Question to localstorage
@@ -300,18 +311,28 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	}
 	$scope.getdropdownqtsteacherside = function () {
 		$scope.questions = [];
+		questionSets = [];
 
-		var qtdata = firebase.database().ref('DropdownQuestions');
-
-		qtdata.on('value', function (snapshot) {
-
+		var qtSetdata = firebase.database().ref('QuestionSets');
+		qtSetdata.on('value', function (snapshot) {
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
 				var childData = childSnapshot.val();
-				//when text feedback
-				$scope.questions.push({ key: key, value: childData['question'] });
+				questionSets[key] = childData['setname'];
+				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
 			});
-			$scope.safeApply();
+			var qtdata = firebase.database().ref('DropdownQuestions');
+			qtdata.on('value', function (snapshot) {
+
+				snapshot.forEach(function (childSnapshot) {
+					var key = childSnapshot.key
+					var childData = childSnapshot.val();
+					//when text feedback
+					var set = childData['Set'];
+					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+				});
+				$scope.safeApply();
+			});
 		});
 
 	}
@@ -675,18 +696,29 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	}
 	$scope.getSlidesqtsteacherside = function () {
 		$scope.questions = [];
-		var qtdata = firebase.database().ref('SlideQuestions');
-		qtdata.on('value', function (snapshot) {
+		questionSets = [];
 
+		var qtSetdata = firebase.database().ref('QuestionSets');
+		qtSetdata.on('value', function (snapshot) {
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
 				var childData = childSnapshot.val();
-				//when text feedback
-				$scope.questions.push({ key: key, value: childData['question'] });
+				questionSets[key] = childData['setname'];
+				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
 			});
-			$scope.safeApply();
-		});
+			var qtdata = firebase.database().ref('SlideQuestions');
+			qtdata.on('value', function (snapshot) {
 
+				snapshot.forEach(function (childSnapshot) {
+					var key = childSnapshot.key
+					var childData = childSnapshot.val();
+					//when text feedback
+					var set = childData['Set'];
+					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+				});
+				$scope.safeApply();
+			});
+		});
 	}
 	$scope.getSlides = function () {
 		//Get Dropdown type options

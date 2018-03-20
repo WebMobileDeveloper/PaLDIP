@@ -73,8 +73,11 @@
 
 		<div class="row">
 			<md-input-container flex>
-				<div class="row " ng-repeat="obj in questions track by $index" style="margin-top:5px;" ng-hide="deletingprogresskey">
-					<div class="col-md-9  col-md-offset-1 qtdetails">
+				<div class="row question-row" ng-repeat="obj in questions track by $index" style="margin-top:5px;" ng-hide="deletingprogresskey">
+					<div class="col-md-2 qtdetails" style="color: black;background-color: #d2e5f5;border-color: white;text-align:right;">
+						<div style="margin-top:4px; ">&nbsp;&nbsp;&nbsp;{{obj.questionSet}}</div>
+					</div>
+					<div class="col-md-8 qtdetails">
 						<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</div>
 					</div>
 					<div class="col-md-2">
@@ -95,6 +98,9 @@
 	</div>
 </body>
 <style>
+	.question-row {
+		display: flex;
+	}	
 	.qtdetails {
 		color: #31708f;
 		background-color: #d9edf7;

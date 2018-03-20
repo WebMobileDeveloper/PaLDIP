@@ -365,18 +365,29 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	$scope.getdigitqtsteacherside = function () {
 		$scope.questions = [];
-		var qtdata = firebase.database().ref('DigitQuestions');
-		qtdata.on('value', function (snapshot) {
+		questionSets = [];
 
+		var qtSetdata = firebase.database().ref('QuestionSets');
+		qtSetdata.on('value', function (snapshot) {
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
 				var childData = childSnapshot.val();
-				//when text feedback
-				$scope.questions.push({ key: key, value: childData['question'] });
+				questionSets[key] = childData['setname'];
+				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
 			});
-			$scope.safeApply();
-		});
+			var qtdata = firebase.database().ref('DigitQuestions');
+			qtdata.on('value', function (snapshot) {
 
+				snapshot.forEach(function (childSnapshot) {
+					var key = childSnapshot.key
+					var childData = childSnapshot.val();
+					//when text feedback
+					var set = childData['Set'];
+					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+				});
+				$scope.safeApply();
+			});
+		});
 	}
 
 	//################################## Functions for Teacher pages############################################
@@ -1112,7 +1123,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//Get Question Sets
 	$scope.getsets = function () {
-		var questionsetName = localStorage.getItem('questionsetName');	
+		var questionsetName = localStorage.getItem('questionsetName');
 		var qtsets = firebase.database().ref('QuestionSets');
 		$scope.QuestionSets = [];
 		qtsets.on('value', function (snapshot) {
