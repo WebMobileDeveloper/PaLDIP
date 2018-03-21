@@ -302,6 +302,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			if (user) {
 				var uid = user.uid;
 				var j = 0;
+				console.log(uid)
 				var groupdata = firebase.database().ref('StudentGroups/' + uid);
 				groupdata.on('value', function (snapshot) {
 					$scope.studentgroups = [];

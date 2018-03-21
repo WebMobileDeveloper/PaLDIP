@@ -134,7 +134,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 				firebase.database().ref().update(updates).then(function () {
 					if ($scope.profilefield == true) {
-						var groupcode = $scope.groupcode;//Questions
+						var groupcode = $scope.groupcode.split("/")[0];			//Questions
 						var rootRef = firebase.database().ref();
 						var storesRef = rootRef.child('StudentGroups/' + uid);
 						var newStoreRef = storesRef.push();//Add record to Question table in fireabse
