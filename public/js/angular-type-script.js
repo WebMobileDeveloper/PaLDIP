@@ -121,7 +121,7 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 					var childData = childSnapshot.val();
 					//when text feedback
 					var set = childData['Set'];
-					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });				
 				});
 				$scope.safeApply();
 			});
@@ -317,13 +317,10 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 		qtSetdata.on('value', function (snapshot) {
 			snapshot.forEach(function (childSnapshot) {
 				var key = childSnapshot.key
-				var childData = childSnapshot.val();
-				questionSets[key] = childData['setname'];
-				//$scope.questionSets.push(key : { key: key, value: childData['setname'] });
+				questionSets[key] = childSnapshot.val()['setname'];
 			});
 			var qtdata = firebase.database().ref('DropdownQuestions');
 			qtdata.on('value', function (snapshot) {
-
 				snapshot.forEach(function (childSnapshot) {
 					var key = childSnapshot.key
 					var childData = childSnapshot.val();
@@ -331,6 +328,7 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 					var set = childData['Set'];
 					$scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
 				});
+
 				$scope.safeApply();
 			});
 		});
