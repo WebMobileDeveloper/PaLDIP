@@ -33,34 +33,49 @@
 			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
 				<li>
 					<a href="../../../index.html">
-						<span class="glyphicon glyphicon-log-out"></span> Sign Out 
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out
 					</a>
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
 				<li>
 					<a href="../questionSets.html">
-						<span class="glyphicon glyphicon-chevron-left"></span> Back 
+						<span class="glyphicon glyphicon-chevron-left"></span> Back
 					</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
 	<div class="row">
-		<div class="col-md-10">
+		<div class="col-md-8 col-md-offset-2">
 			<h2 class="text-center" style="font-style:italic;">
 				<span class="title">{{questionsetName}}</span>&emsp; Question Set</h2>
+			<hr style="border: 1px solid gray" />​
 		</div>
-		<div class="col-md-2">
+	</div>
+	<div class="row" style="text-align:center; display:flex;">
+		<div class="chip-row col-md-6 col-md-offset-2" ng-init="getTags()">
+			<md-chips ng-model="selectedTags" md-autocomplete-snap="" md-transform-chip="transformChip($chip)" md-require-match="false">
+				<md-autocomplete md-search-text="searchText" md-items="item in querySearch(searchText)" md-item-text="item.name" placeholder="Search or input Tags">
+					<span md-highlight-text="searchText">{{item.name}}</span>
+				</md-autocomplete>
+				<md-chip-template>
+					<span>
+						<strong>{{$chip.name}}</strong>
+					</span>
+				</md-chip-template>
+			</md-chips>
+		</div>
+		<div class="col-md-2 button-div">
+			<a>
+				<button class="btn btn-primary" style="margin-right:20px;" ng-click="updateTags()">Update Tags</button>
+			</a>
 			<a href="../createQuestion/choiceCreateQuestionType.html">
-				<button class="btn btn-success" style="font-size: 1.2em;">Create Question</button>
+				<button class="btn btn-success">Create Question</button>
 			</a>
 		</div>
 	</div>
 	<div class="main">
-
-		<hr style="border: 1px solid gray" />​
-
 		<!-- feedback Type questions -->
 		<div class="row" ng-repeat="obj in feedbackTypequestions">
 			<!-- <div class="col-md-2">{{obj.type}}</div> -->
@@ -97,6 +112,7 @@
 
 	.main {
 		text-align: center;
+		margin-top: 20px;
 	}
 
 	.title {
@@ -130,22 +146,51 @@
 		cursor: pointer
 	}
 
-	/*.main{
-		 position: absolute; 
-		 margin-top: 25%; 
-		 left: 50%;
-		 width: calc(100% - 50px); 
-		 max-width: 650px; 
-		 transform: translate(-50%,-50%); 
-		 border-radius: 5px; 
-		 box-shadow: 0 0 5px hsla(0,0%,59%,.8);
-		 max-height:900px; 
-	} 	*/
-
 	md-input-container {
 		width: 80%;
 		margin-left: 10%
 	}
+
+	.button-div {
+		display: table;
+	}
+
+	.button-div>a {
+		vertical-align: middle;
+		display: table-cell;
+	}
+
+	.button-div>a>button {
+		width: 100px;
+		white-space: normal;
+		padding: 2px 10px;
+		line-height: 1.1em;
+		line-height: 1.3em;
+		font-size: 1.1em;
+	}
+
+	/*======================== chip style ====================*/
+
+	/* .chip-row {
+		padding: 0px 10%;
+	} */
+
+	.md-chips .md-chip-input-container md-autocomplete input {
+		width: 100%;
+	}
+
+	.md-chips md-chip {
+		border-radius: 12px;
+	}
+
+	.md-chips md-chip .md-chip-remove md-icon {
+		height: 18px;
+		width: 18px;
+		min-height: 10px;
+		min-width: 10px;
+	}
+
+	/* ------------------------------ */
 </style>
 
 </html>

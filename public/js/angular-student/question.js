@@ -408,7 +408,6 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
     $scope.submitfeedback = function () {
         // if(!$scope.scalescores==null)
         if ($scope.questiontype == 1) {//type==scale
-
             var updates = {};
             updates['/Feedbacks/' + $scope.questionkey + '/' + $scope.answerkey + '/' + $scope.loginedUserId] = $scope.scalescores;
             $scope.success('Your feedback is submitted Successfully!');
@@ -421,7 +420,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
             var updates = {};
             updates['/FeedbackTexts/' + $scope.questionkey + '/' + $scope.answerkey + '/' + $scope.loginedUserId] = $scope.feedbacktext;
             firebase.database().ref().update(updates).then(function () {
-                $scope.feedbacktext = '';
+                //$scope.feedbacktext = '';
                 $scope.success('Your feedback is submitted Successfully!');
                 $scope.safeApply();
             }).catch(function (error) {
@@ -435,7 +434,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                 updates2['/FeedbackTexts/' + $scope.questionkey + '/' + $scope.answerkey + '/' + $scope.loginedUserId] = $scope.feedbacktext;
                 firebase.database().ref().update(updates2).then(function () {
                     $scope.success('Your feedback is submitted Successfully!');
-                    $scope.feedbacktext = '';
+                    //$scope.feedbacktext = '';
                     $scope.safeApply();
                 }).catch(function (error) {
                     $scope.error('Submit Error!')
@@ -904,11 +903,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
 
     $scope.getSlides = function () {
         if ($scope.previousanswer) {
-            console.log($scope.previousanswer.split(','))
-            console.log($scope.previousanswerval.split(','))
-            //$scope.paintgraph($scope.previousanswer.split(','), $scope.previousanswerval.split(','), "pieChartforSlide2");
-
-            $scope.paintgraph( ["O", "C", "E", "A", "N"], [73, 75, 32, 69, 10], "pieChartforSlide2");
+            $scope.paintgraph($scope.previousanswer.split(','), $scope.previousanswerval.split(','), "pieChartforSlide2");
         } else {
             var propertiesRef = firebase.database().ref('SlideQuestions/' + $scope.questionkey + '/properties');
             var i = 0;
@@ -974,39 +969,9 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                     classSlideVal[k] += answerval[k] * 1;
                 }
             });
-            // console.log(answer)
-            // console.log(classSlideVal)
 
             $scope.paintgraph($scope.previousanswer.split(','), $scope.previousanswerval.split(','), "mychart")
             $scope.paintgraph($scope.previousanswer.split(','), classSlideVal, "classchart")
         });
     }
-
-    // $scope.viewClassSlidenanswer=function(){
-    // 	var answer;
-    // 	var classSlideVal=[];
-    // 	var slideanswer = firebase.database().ref('SlideAnswers/'+$scope.questionkey+'/answer');
-    // 	slideanswer.on('value', function(snapshot) {
-    // 		console.log(snapshot.val())
-    // 		var countOfanswers=snapshot.numChildren();
-
-    // 		snapshot.forEach(function(childSnapshot) {
-    // 			answer=childSnapshot.val()['answer']
-    // 			var answerval=childSnapshot.val()['answerval']
-    // 			var answercount=childSnapshot.numChildren()/2;
-
-    // 			for(var k=0;k<answercount;k++){
-    // 				console.log(answerval[k])
-    // 				if(!classSlideVal[k])classSlideVal[k]=0;
-    // 				classSlideVal[k]+=answerval[k]*1;
-    // 			}
-    // 			console.log(classSlideVal)
-    // 		});
-    // 	})		
-
-    // 	setTimeout(function(){
-    // 		$scope.paintgraph($scope.currentmyslideanswer.split(','),$scope.currentmyslideanswerval.split(','),"mychart")
-    // 		$scope.paintgraph(answer,classSlideVal,"classchart")
-    // 	},2500)			
-    // }
 });
