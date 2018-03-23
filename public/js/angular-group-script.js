@@ -137,7 +137,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		});
 
 		var Setdetails = { setname: $scope.setname, creator: userid, tags: tags };		//Questions
-		
+
 		var storesRef = firebase.database().ref().child('QuestionSets');
 
 		storesRef.orderByChild('setname').equalTo($scope.setname).once('value', function (snapshot) {
@@ -156,30 +156,33 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					localStorage.setItem("questionsetName", $scope.setname);
 					$scope.safeApply();
 					setTimeout(function () {
-						window.location.href = '../create question by type.html';
+						window.location.href = '../choiceCreateQuestionType.html';
 					}, 1000)
 				})
 			}
 		});
 	}
 	$scope.getgroups = function () {
-		setTimeout(function () {
-			var uid = firebase.auth().currentUser.uid;
-			var groupdata = firebase.database().ref('Groups/' + uid);
-			groupdata.on('value', function (snapshot) {
-				$scope.groups = [];
-				snapshot.forEach(function (childSnapshot) {
-					$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				var uid = user.uid;
+				var groupdata = firebase.database().ref('Groups/' + uid);
+				groupdata.on('value', function (snapshot) {
+					$scope.groups = [];
+					snapshot.forEach(function (childSnapshot) {
+						$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
+					});
+					$scope.safeApply();
 				});
-				$scope.safeApply();
-			});
-		}, 1000)
-
+			} else {
+				$scope.error("You need to login!");
+			}
+		});
 	}
 	$scope.gotoGroupDetails = function (obj) {
 		localStorage.setItem("groupkey", obj.key);
 		localStorage.setItem("groupname", obj.groupname);
-		window.location.href = './groupQuestion.html';
+		window.location.href = './editGroupQuestionSets.html';
 	}
 	//get sets in the group and total set lists
 	$scope.getQuesionSets = function () {//
@@ -302,7 +305,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			if (user) {
 				var uid = user.uid;
 				var j = 0;
-				console.log(uid)
 				var groupdata = firebase.database().ref('StudentGroups/' + uid);
 				groupdata.on('value', function (snapshot) {
 					$scope.studentgroups = [];
@@ -327,11 +329,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				$scope.error("You need to login!");
 			}
 		});
-
-
-
-
 	};
+
+	
 	//go to details of student group
 	$scope.studentGroupDetails = function (obj) {
 		if (obj.QuestionSets == undefined) {
@@ -343,7 +343,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var setnames = [];
 		var setkey = [];
 		var k = 0;
-		for(key in obj.QuestionSets){
+		for (key in obj.QuestionSets) {
 			setnames[k] = obj.QuestionSets[key].setname;
 			setkey[k] = obj.QuestionSets[key].key;
 			k++;

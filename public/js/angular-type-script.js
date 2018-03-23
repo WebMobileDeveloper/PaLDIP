@@ -904,7 +904,7 @@ app.controller('TypeCtrl', function ($scope, toaster) {
 	$scope.exportAllQuestionDatas = function (dbname) {
 		localStorage.setItem("databasename", dbname);
 		setTimeout(function () {
-			window.location.href = '../exportall.html';
+			window.location.href = '../exportAlltoExcel.html';
 		}, 1000);
 	}
 	//fileUpload

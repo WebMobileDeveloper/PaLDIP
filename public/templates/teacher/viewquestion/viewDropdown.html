@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html data-ng-app="DemoApp">
 
 <head>
@@ -28,11 +27,19 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
 
-	<title>Submit Unswer</title>
+	<title>Select Question</title>
 </head>
 
-<body data-ng-controller="TypeCtrl" ng-init="getdropdownoptions()">
+<body data-ng-controller="TypeCtrl" ng-init="getdropdownqts()">
 	<nav class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a href="../questions for students.html" class="navbar-brand typequestion">Feedback Type</a>
+			<a href="./viewdigit.html" class="navbar-brand typequestion">Digit Type</a>
+			<a href="./viewtext.html" class="navbar-brand typequestion">Text Type</a>
+			<a class="navbar-brand typequestion" style="color: white;">Dropdown Type</a>
+			<!-- <a  class="navbar-brand typequestion">Likert Type</a> -->
+			<a href="./viewSlide.html" class="navbar-brand typequestion">Slider Type</a>
+		</div>
 		<div class="container-fluid">
 			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
 				<!---->
@@ -41,62 +48,51 @@
 						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
 				</li>
 			</ul>
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<!---->
+				<li>
+					<a href="../group/studentGroupDetail.html">
+						<span class="glyphicon glyphicon-chevron-left"></span> Back </a>
+				</li>
+			</ul>
 		</div>
 	</nav>
-	<div class="row" ng-init="loadimage(1)">
-		<div class="com-md-4"></div>
-		<div class="com-md-4">
-			<md-input-container flex>
-				<img ng-show="imgloaded" alt="Smiley face" style="margin-left: 20%;width:60%">
-			</md-input-container>
-
+	<div class="main">
+		<h2 class="text-center m-b-30">Select Question</h2>
+		<hr style="border: 1px solid gray" />​
+		<div class="row">
+			<div class="row" ng-repeat="obj in questions track by $index" style="margin-top:5px;">
+				<div class="col-md-8  col-md-offset-2 qtdetails" ng-click="goDropdownSubmitAnswer(obj.key,obj.value)">
+					<p style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</p>
+				</div>
+				<!-- <div class="col-md-2"> -->
+				<!-- <button  class="btn btn-waring"  style="margin-left:width:10%;color:black;">X</button> -->
+				<!-- </div> -->
+			</div>
 		</div>
-		<div class="com-md-4"></div>
 
-	</div>
-	<div class="row">
-		<md-input-container flex style="font-size:35px;text-align: center;color:green">
-			{{question}}
-		</md-input-container>
-	</div>
-	<hr style="border: 1px solid gray" />​
-	<div class="row" ng-hide="submitAnswerDisableKey_dropdown">
-		<md-input-container flex>
-			<md-select ng-model="dropdownanswerkey" placeholder="Select a answer">
-				<md-option ng-value="$index" ng-repeat="opt in options" ng-click="setDropdownQuestion(opt)">{{ opt }}</md-option>
-			</md-select>
-		</md-input-container>
-	</div>
-	<div class="row" ng-show="submitAnswerDisableKey_dropdown">
-		<h4 style="text-align:center">You already submitted answer about this question before.</h4>
-		<br>
-		<md-input-container flex>
-			<label>Your answer</label>
-			<input ng-model="dropdownanswer" readonly="true" />
-		</md-input-container>
-	</div>
-	<hr style="border: 1px solid gray" />​
-	<div class="row">
-		<md-input-container flex>
-			<button class="btn btn-primary" style="margin-left:30%;width:20%;" ng-click="savedropdownanswer()" ng-disabled="submitAnswerDisableKey_dropdown">Submit</button>
-			<!-- <a class="btn btn-link" href="./viewDropdown.html" style="margin-left:10%">Back</a> -->
-			<a class="btn btn-link" href="javascript:history.back()" style="margin-left:10%">Back</a>
-			<a class="btn btn-link" href="./viewClassDropdownanswer.html" style="margin-left:10%" ng-show="submitAnswerDisableKey_dropdown">Next</a>
-		</md-input-container>
 	</div>
 </body>
 <style>
-	.main {
-		position: relative;
-		top: 0%;
-		left: 20%;
-		width: 60%;
-		max-width: 1650px;
-		padding: 50px 20px 50px 20px;
-		/*-webkit-transform: translate(-50%,-50%);
-		transform: translate(-50%,-50%);
-		border-radius: 5px;
-		box-shadow: 0 0 5px hsla(0,0%,59%,.8);*/
+	.qtdetails {
+		color: #31708f;
+		background-color: #d9edf7;
+		border-color: #bce8f1;
+		border-radius: 3px;
+		min-height: 40px;
+		max-height: 100px;
+		font-weight: bold;
+		vertical-align: middle;
+		font-size: 12px;
+		cursor: pointer;
+	}
+
+	.qtdetails:hover {
+		background-color: lightblue;
+	}
+
+	.typequestion {
+		cursor: pointer
 	}
 
 	md-input-container {

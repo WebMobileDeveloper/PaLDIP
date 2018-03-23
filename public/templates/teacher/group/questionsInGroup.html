@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html data-ng-app="DemoApp">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/60204/toaster.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script src="../../../firebase_config.js"></script>
+	<script src="../../../js/angular/group.js"></script>
+	<title>QuestionSets in Group</title>
+</head>
+
+<body data-ng-controller="MainCtrl" ng-init="getAllQuesionsInGroup()">
+
+	<div ng-hide="lodingfinished" style=" width: 100%; height: 100vh; background: rgba(0,0,0,0.12); position: absolute; z-index: 100;padding-right: 60px;">
+		<div class="loader" style="margin-top: 50vh;
+				border: 16px solid #f3f3f3;
+				border-radius: 50%;
+				border-top: 16px solid #3498db;
+				width: 120px;
+				height: 120px;
+				-webkit-animation: spin 2s linear infinite;
+				/* Safari */
+				animation: spin 2s linear infinite;
+				margin-left: 50%;"></div>
+	</div>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../../../index.html">
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out
+					</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="./ChoiceGroupAction.html">
+						<span class="glyphicon glyphicon-chevron-left"></span> Back
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="row title-div">
+		<h2 class="text-center" style="font-style:italic; color: #1d22f9">
+			<b style="color:midnightblue; ">Group: </b>{{grouptitle}}</h2>
+	</div>
+	<!-- <hr style="border: 1px solid gray" />​ -->
+	<div class="main">
+		<div class="container">
+
+			<div ng-repeat="set in feedbackTypequestions">
+				<div ng-repeat="obj in set" class="question-row">
+					<div class="col-md-2 question-set">
+						<div>
+							<div>{{obj.setName}}</div>
+						</div>
+					</div>
+					<div class="col-md-9 question-val">
+						<div>
+							<div>{{obj.value}}</div>
+						</div>
+					</div>
+					<div class="col-md-1 question-val">
+						<div>
+							<div>
+								<button id="delbtn" type="button" class="btn btn-primary" ng-click="exportQuestionDatas(obj.key,obj.value,'Answers')">
+									View Responses
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div ng-repeat="set in digitTypequestions">
+				<div ng-repeat="obj in set" class="question-row">
+					<div class="col-md-2 question-set">
+						<div>
+							<div>{{obj.setName}}</div>
+						</div>
+					</div>
+					<div class="col-md-9 question-val">
+						<div>
+							<div>{{obj.value}}</div>
+						</div>
+					</div>
+					<div class="col-md-1 question-val">
+						<div>
+							<div>
+								<button id="delbtn" type="button" class="btn btn-primary" ng-click="exportQuestionDatas(obj.key,obj.value,'DigitAnswers')">
+									View Responses
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div ng-repeat="set in textTypequestions">
+				<div ng-repeat="obj in set" class="question-row">
+					<div class="col-md-2 question-set">
+						<div>
+							<div>{{obj.setName}}</div>
+						</div>
+					</div>
+					<div class="col-md-9 question-val">
+						<div>
+							<div>{{obj.value}}</div>
+						</div>
+					</div>
+					<div class="col-md-1 question-val">
+						<div>
+							<div>
+								<button id="delbtn" type="button" class="btn btn-primary" ng-click="exportQuestionDatas(obj.key,obj.value,'TextAnswers')">
+									View Responses
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div ng-repeat="set in dropdownTypequestions">
+				<div ng-repeat="obj in set" class="question-row">
+					<div class="col-md-2 question-set">
+						<div>
+							<div>{{obj.setName}}</div>
+						</div>
+					</div>
+					<div class="col-md-9 question-val">
+						<div>
+							<div>{{obj.value}}</div>
+						</div>
+					</div>
+					<div class="col-md-1 question-val">
+						<div>
+							<div>
+								<button id="delbtn" type="button" class="btn btn-primary" ng-click="exportQuestionDatas(obj.key,obj.value,'DropdownAnswers')">
+									View Responses
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-repeat="set in slideTypequestions">
+				<div ng-repeat="obj in set" class="question-row">
+					<div class="col-md-2 question-set">
+						<div>
+							<div>{{obj.setName}}</div>
+						</div>
+					</div>
+					<div class="col-md-9 question-val">
+						<div>
+							<div>{{obj.value}}</div>
+						</div>
+					</div>
+					<div class="col-md-1 question-val">
+						<div>
+							<div>
+								<button id="delbtn" type="button" class="btn btn-primary" ng-click="exportQuestionDatas(obj.key,obj.value,'SlideAnswers')">
+									View Responses
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+<style>
+
+	.title-div {
+		font-style: italic;
+		color: #1d22f9;
+		border-bottom: solid 1px #00000052;
+		padding-bottom: 15px;
+		margin-bottom: 15px;
+	}
+
+	.question-row {
+		display: flex;
+		margin-top: 5px;
+		min-height: 40px;
+		max-height: 200px;
+		font-weight: bold;
+		font-family: serif;
+		font-size: 1.2em;
+	}
+
+	.question-row>div {
+		border-radius: 3px;
+	}
+
+	.question-row>div>div {
+		display: table;
+		height: 100%;
+		width: 100%;
+	}
+
+	.question-row>div>div>div {
+		display: table-cell;
+		vertical-align: middle;
+		height: 100%;
+		padding: 5px;
+	}
+
+	.question-set {
+		color: black;
+		background-color: #d2e5f5;
+	}
+
+	.question-set>div>div {
+		text-align: right;
+	}
+
+	.question-val {
+		color: #31708f;
+		background-color: #d9edf7;
+	}
+
+	.question-val button {
+		width: 70px;
+		white-space: normal;
+		line-height: 1em;
+		padding: 5px;
+		font-size: 0.8em;
+	}
+	
+    /* Safari */
+
+    @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+</style>
+
+</html>

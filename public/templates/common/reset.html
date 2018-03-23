@@ -2,15 +2,16 @@
 <html data-ng-app="DemoApp">
 
 <head>
-	<title>Login</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
 	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
 	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
-
 	<!-- Angular Material Dependencies -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
 	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -20,51 +21,30 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 
+
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
 
-
-	<script src="./firebase_config.js"></script>
-	<script src="./js/angular/user.js"></script>
+	<script src="../../firebase_config.js"></script>
+	<script src="../../js/angular/user.js"></script>
+	<title>Reset Password</title>
 </head>
 
 <body data-ng-controller="MainCtrl">
 	<div class="loginform">
 
-		<h2 class="text-center m-b-30">Sign In</h2>
-		<div class="row">
-			<md-input-container flex>
-				<label for="username">You are...</label>
-				<md-select data-ng-model="usertype" class="md-block flex-gt-sm" name="authType" placeholder="You are..." required="" role="listbox"
-				 tabindex="0" aria-label="You are..." aria-labelledby="" aria-required="true" aria-disabled="false" aria-invalid="false"
-				 aria-multiselectable="false">
-					<md-option data-ng-value="obj" data-ng-repeat="obj in categories">{{ obj }}</md-option>
-				</md-select>
-
-			</md-input-container>
-
-		</div>
+		<h3 class="text-center m-b-30">Forgot Password</h3>
+		<br>
 		<div class="row">
 			<md-input-container flex>
 				<label for="username">Email</label>
-				<input ng-model="loginmail" name="username" required="true" type="text">
-			</md-input-container>
-		</div>
-		<div class="row">
-			<md-input-container flex>
-				<label for="password">Password</label>
-				<input ng-model="pwd" name="password" required="true" type="password">
+				<input ng-model="requestmail" name="username" required="true" type="text">
 			</md-input-container>
 		</div>
 
 		<div class="row">
 			<md-input-container flex>
-				<button id="signin" class="btn btn-primary" style="margin-left:15%" ng-click="login()">Log In</button>
-				<a class="btn btn-link" href="./templates/common/register.html" style="margin-left:25%">Register</a>
-			</md-input-container>
-		</div>
-		<div class="row">
-			<md-input-container flex>
-				<a class="btn btn-link" href="./templates/common/reset.html" style="margin-left:35%">Forgot password?</a>
+				<button id="resetpwd" class="btn btn-primary" style="margin-left:15%" ng-click="resetpwd()">Send Request</button>
+				<a class="btn btn-link" href="javascript:history.back()" style="margin-left:15%">Back</a>
 			</md-input-container>
 		</div>
 	</div>
@@ -72,10 +52,10 @@
 <style>
 	.loginform {
 		position: absolute;
-		top: 40%;
+		top: 50%;
 		left: 50%;
 		width: calc(100% - 30px);
-		max-width: 550px;
+		max-width: 350px;
 		padding: 50px 20px 30px 20px;
 		-webkit-transform: translate(-50%, -50%);
 		transform: translate(-50%, -50%);
@@ -90,7 +70,8 @@
 	}
 
 	body {
-		background: url("./Coverimage.jpg");
+		background: url("../../Coverimage.jpg");
+		background-repeat: no-repeat;
 		background-attachment: fixed;
 		background-size: 100% auto;
 		background-size: 100% 100%;
@@ -103,9 +84,5 @@
 		font-size: 25px
 	}
 </style>
-<script>
-	$(function(){
-		localStorage.clear();
-	});
-</script>
+
 </html>

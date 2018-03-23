@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html data-ng-app="DemoApp">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/60204/toaster.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script src="../../../firebase_config.js"></script>
+	<script src="../../../js/angular-student/question.js"></script>
+	<title>Submit Feedback</title>
+</head>
+
+<body data-ng-controller="MainCtrl" ng-init="getanswers()">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../../../index.html">
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="main">
+		<div class="row well">
+
+			<div class="col-md-1">
+				<button class="btn btn-default" style="margin-left:20%;margin-top:40px;color:crimson" ng-click="decreaseindex()">&#9664;</button>
+			</div>
+			<div class="col-md-10">
+				<md-input-container flex>
+					<label for="answerplan" ng-hide="true"></label>
+					<textarea ng-model="answerplan" rows="3" style="border-radius:5px;font-size:23px;background-color:white;color:#31708f;width:130%;margin-left:-12%;text-align:left;border-color:crimson"
+					 readonly="true">
+					</textarea>
+				</md-input-container>
+			</div>
+			<div class="col-md-1">
+				<button class="btn btn-default" style="margin-left:20%;margin-top:40px;color:crimson" ng-click="increaseindex()">&#9654;</button>
+			</div>
+		</div>
+		<md-progress-linear ng-hide="hideindex" md-mode="query" style="position:absolute;width:100%;margin-left:-3%"></md-progress-linear>
+
+		<hr style="border: 1px solid gray" ng-show="questiontype" />​		
+		<div class="row starfield" ng-show="questiontype">			
+			<div ng-hide="scalehide" class="row" ng-repeat="obj in feedbackquestions">
+				<md-input-container flex>
+					<div class="col-md-8">
+						{{obj}}
+					</div>
+					<div class="col-md-4 starrow">
+						<span class="fa fa-star " ng-click="setstar(0,$index)"></span>
+						<span class="fa fa-star " ng-click="setstar(1,$index)"></span>
+						<span class="fa fa-star " ng-click="setstar(2,$index)"></span>
+						<span class="fa fa-star" ng-click="setstar(3,$index)"></span>
+						<span class="fa fa-star" ng-click="setstar(4,$index)"></span>
+					</div>
+				</md-input-container>
+
+			</div>
+			<div ng-show="scalehide" class="row">
+				<md-input-container flex>
+					<h3>No Feedback Question</h3>
+				</md-input-container>
+			</div>
+		</div>
+		<hr style="border: 1px solid gray" ng-hide="questiontype" />​
+		<div class="row" ng-hide="questiontype2" id="txtfedback">
+			<md-input-container flex>
+				<label>Feedback</label>
+				<textarea ng-model="feedbacktext" rows="3" style="border-radius:5px;height:10px;font-size:18px"></textarea>
+			</md-input-container>
+		</div>
+		<hr style="border: 1px solid gray" />​
+		<div class="row">
+			<md-input-container flex>
+				<button ng-disabled="scalehide && questiontype" class="btn btn-primary" style="margin-left:20%" ng-click="submitfeedback();">Submit</button>
+				<a class="btn btn-link" href="./submitFeedbackAnswer.html" style="margin-left:20%">Back</a>
+				<a class="btn btn-link" href="./submitFeedbackAnswer_2.html" style="margin-left:20%">Next</a>
+			</md-input-container>
+		</div>
+	</div>
+</body>
+<style>
+	.main {
+		position: relative;
+		top: 50%;
+		left: 50%;
+		width: calc(100% - 50px);
+		max-width: 650px;
+		padding: 50px 20px 50px 20px;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		border-radius: 5px;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+	}
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%
+	}
+
+	.checked {
+		color: orange;
+	}
+
+	.fa-star {
+		cursor: pointer
+	}
+</style>
+
+</html>

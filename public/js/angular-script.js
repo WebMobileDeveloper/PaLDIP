@@ -68,6 +68,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	//when click register button-register.html
 	//When user click register button, this function is called
 	$scope.register = function () {
+
+
 		if ($scope.basicpassword == undefined || $scope.authtype == undefined || $scope.username == undefined) {
 			$scope.error('Input information correctly!')
 			return;
@@ -86,19 +88,35 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				$scope.error('Input GroupCode!')
 				return;
 			}
-			var groupCodeArr = $scope.groupcode.split("/");  //0: groupcode   1:teacher code
-			console.log('Groups/' + groupCodeArr[1] + "/" + groupCodeArr[0]);
-			var groupRef = firebase.database().ref('Groups/' + groupCodeArr[1] + "/" + groupCodeArr[0]);			
-			groupRef.once('value', function (snapshot) {
-				if (snapshot.exists()) {		//  correct group 
-					$scope.saveuser();
-					$scope.safeApply();
-				} else {	
-					$scope.error('Invalid GroupCode!')
-					$scope.safeApply()
-					return;
-				}
+			var existinggroup = firebase.database().ref('Groups');
+			var flag = 0;
+			existinggroup.on('value', function (snapshot) {
+
+				snapshot.forEach(function (childSnapshot) {
+					var key = childSnapshot.key;
+					var existinggroup = firebase.database().ref('Groups/' + key);
+					existinggroup.on('value', function (nextchild) {
+						nextchild.forEach(function (result) {
+
+							if ($scope.groupcode == result.key) {
+								flag = 1;
+							}
+						})
+					})
+				});
+				setTimeout(function () {
+					if (flag == 0) {
+						$scope.error('Invalid GroupCode!')
+						$scope.safeApply()
+						return;
+					} else {
+						$scope.saveuser();
+						$scope.safeApply()
+					}
+
+				}, 2000)
 			});
+
 		} else {
 			$scope.saveuser();
 		}
@@ -134,7 +152,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 				firebase.database().ref().update(updates).then(function () {
 					if ($scope.profilefield == true) {
-						var groupcode = $scope.groupcode.split("/")[0];			//Questions
+						var groupcode = $scope.groupcode;//Questions
 						var rootRef = firebase.database().ref();
 						var storesRef = rootRef.child('StudentGroups/' + uid);
 						var newStoreRef = storesRef.push();//Add record to Question table in fireabse
@@ -154,6 +172,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					}
 
 				})
+
+
 			}).catch(function (error) {
 				$scope.error(error.message)
 				$scope.safeApply();
@@ -179,7 +199,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					} else {
 						if (curusertype == 'Teacher') {
 							if (snapshot.val().approval == 1)
-								// window.location.href = './templates/creat question.html';
 								window.location.href = './templates/teachermain.html';
 							else
 								$scope.error('You are not approved yet!')
@@ -369,7 +388,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 	//################################## Functions for Teacher pages############################################
 	//-----------------------------------Create and Delete Questions---------------------------------------------------------------------------------------------------------------
-	// Create Question function-question details.html
+	// Create Question function-createQuestionByFeedback.html
 	$scope.creatQuestion = function () {
 		//if question doesn't exist, return
 		if ($scope.mainQuestion == '' || $scope.mainQuestion == undefined) {
@@ -514,7 +533,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.exportAllQuestionDatas = function (dbname) {
 		localStorage.setItem("databasename", dbname);
 		setTimeout(function () {
-			window.location.href = '../templates/exportall.html';
+			window.location.href = '../templates/exportAlltoExcel.html';
 		}, 1000);
 	}
 	$scope.exportQuestionDatas1 = function (key, question, dbname) {
@@ -528,7 +547,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.exportAllQuestionDatas1 = function (dbname) {
 		localStorage.setItem("databasename", dbname);
 		setTimeout(function () {
-			window.location.href = '../exportall.html';
+			window.location.href = '../exportAlltoExcel.html';
 		}, 1000);
 	}
 
@@ -1096,7 +1115,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				$scope.safeApply()
 			})
 		}
-
 	}
 	//Get Question Sets
 	$scope.getsets = function () {

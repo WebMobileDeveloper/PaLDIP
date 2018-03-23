@@ -2,7 +2,7 @@
 <html data-ng-app="DemoApp">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
 	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
@@ -17,7 +17,7 @@
 	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
 	<!--<script src="https://rawgit.com/angular/bower-material/5d70169b6147dc15144d3f85a929a9ac3f429584/angular-material.js"></script>-->
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-	<script src="../../app.js"></script>
+	<script src="../../firebase_config.js"></script>
 	<script src="../../js/angular-type-script.js"></script>
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -32,13 +32,13 @@
 </head>
 
 <body data-ng-controller="TypeCtrl">
-	<nav _ngcontent-c5="" class="navbar navbar-inverse">
-		<div _ngcontent-c5="" class="container-fluid">
-			<ul _ngcontent-c5="" class="nav navbar-nav navbar-right" style="cursor:pointer">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
 				<!---->
-				<li _ngcontent-c5="" ng-click="logout()">
-					<a _ngcontent-c5="">
-						<span _ngcontent-c5="" class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				<li ng-click="logout()">
+					<a>
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
 				</li>
 			</ul>
 		</div>
