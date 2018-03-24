@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html data-ng-app="DemoApp">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/60204/toaster.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.3/Chart.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script src="../../../firebase_config.js"></script>
+	<script src="../../../js/angular-student/question.js"></script>
+	<title>View Feedbacks</title>
+</head>
+
+<body data-ng-controller="MainCtrl">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../../../index.html">
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="content">
+		<div class="main" ng-init="viewClassDropdownanswer()">
+
+			<div class="row">
+				<md-input-container flex>
+					<label style="font-size:20px;">Your Answer</label>
+					<input rows="3" style="border-radius:5px;font-size:20px" readonly="true" ng-model="previousanswer">
+					</input>
+				</md-input-container>
+			</div>
+
+			<div class="row chart-row">
+
+				<canvas id="pieChart"  basechart="" style="width:300px;height:300px; "></canvas>
+
+			</div>
+			<div class="row" style="text-align: center;
+								font-style: oblique;
+								font-weight: bold;
+								color: #f75a9a;
+								font-size: 1.2em;
+								margin-top: 10px;">
+				<span>{{chartDescription}}</span>
+			</div>
+			<div class="row button-row">
+				<div class="col-md-5">
+					<a class="btn btn-link" href="./submitOthersAnswer.html">Back</a>
+				</div>
+
+				<div class="col-md-5 col-md-offset-2">
+					<a class="btn btn-link" href="./questions for students.html">Select Question</a>
+				</div>
+			</div>
+			<div class="row button-row">
+				<div class="col-md-5">
+					<button class="btn" ng-class="appliedClass(selectedMain)" ng-click="clickMain()">This Group</button>
+				</div>
+				<div class="col-md-5 col-md-offset-2">
+					<button class="btn " ng-class="appliedClass(selectedOther)" ng-click="clickOther()">All Other Groups</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<style>
+	/* .main {
+		position: relative;
+		top: 40%;
+		left: 50%;
+		width: calc(100% - 50px);
+		max-width: 650px;
+		padding: 50px 20px 50px 20px;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		border-radius: 5px;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+		margin-bottom: 25px;
+	} */
+
+	.content {
+		width: 100%;
+	}
+
+	.main {
+		position: relative;
+		width: 650px;
+		margin: 0px auto;
+		padding: 50px 20px 50px 20px;
+		/* -webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%); */
+		border-radius: 5px;
+		box-shadow: 0 0 5px hsla(0, 0%, 59%, .8);
+		margin-bottom: 25px;
+	}
+
+	.chart-row {
+		margin-right: 20px;
+	}
+
+	.button-row {
+		margin: 10px 10%;
+	}
+
+	button {
+		width: 100%;
+		border: solid 1px #2F528F !important;
+		color: white;
+		font-size: 1.2em !important;
+		font-weight: 600 !important;
+	}
+
+	button.selected {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:hover {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:focus {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.deselected {
+		background-color: #8faadca8;
+		color: white;
+	}
+
+	button.deselected:hover {
+		background-color: #8faadca8;
+		color: white;
+	}
+
+	button.deselected:focus {
+		background-color: #8faadca8;
+		color: white;
+	}
+
+	.btn-link,
+	.btn-link:active,
+	.btn-link:focus,
+	.btn-link:hover {
+		font-weight: bold;
+	}
+
+	a {
+		width: 100%;
+	}
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%;
+	}
+
+	.checked {
+		color: orange;
+	}
+
+	#pieChart {
+		margin-right: 100px;
+	}
+</style>
+<script>
+
+</script>
+
+</html>

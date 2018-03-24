@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html data-ng-app="DemoApp">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<!-- Angulars Material CSS using RawGit to load directly from `bower-material/master` -->
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+
+	<!-- Angular Material Dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+
+	<!-- Angular Material Javascript using RawGit to load directly from `bower-material/master` -->
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/60204/toaster.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script src="../../../firebase_config.js"></script>
+	<script src="../../../js/angular-student/question.js"></script>
+	<title>Submit Unswer</title>
+</head>
+
+<body data-ng-controller="MainCtrl">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../../../index.html">
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="row" ng-init="loadimage()">
+		<div class="com-md-4"></div>
+		<div class="com-md-4">
+			<md-input-container flex>
+				<img ng-show="imgloaded" alt="Smiley face" style="margin-left: 20%;width:60%">
+			</md-input-container>
+
+		</div>
+		<div class="com-md-4"></div>
+
+	</div>
+	<div class="row">
+		<md-input-container flex style="font-size:35px;text-align: center;color:green">
+			{{question}}
+		</md-input-container>
+	</div>
+	<hr style="border: 1px solid gray" />​
+
+	<div class="row" ng-hide="previousanswer">
+		<md-input-container flex>
+			<label>Type Your Answer (e.g. X)</label>
+			<textarea ng-model="currAnswer" rows="3" style="border-radius:5px;height:10px"></textarea>
+		</md-input-container>
+	</div>
+
+	<div class="row" ng-show="previousanswer">
+		<h4 style="text-align:center">You already submitted answer about this question before.</h4>
+		<br>
+		<md-input-container flex>
+			<label>Your answer</label>
+			<input ng-model="previousanswer" readonly="true" />
+		</md-input-container>
+	</div>
+
+	<hr style="border: 1px solid gray" />​
+	<div class="row">
+		<md-input-container flex style="text-align:center;">
+			<button class="btn btn-primary" style="width:20%; margin-right:10%" ng-click="saveanswer()" ng-hide="previousanswer">Submit</button>
+			<a class="btn btn-link" href="./questions for students.html">Back</a>
+			<a class="btn btn-link" ng-click="nextpage()" style="margin-left:10%" ng-show="previousanswer">Next</a>
+		</md-input-container>
+	</div>
+</body>
+<style>
+	.main {
+		position: relative;
+		top: 0%;
+		width: 60%;
+		max-width: 1650px;
+		padding: 50px 20px 50px 20px;
+	}
+
+	md-input-container {
+		width: 80%;
+		margin-left: 10%
+	}
+</style>
+
+</html>
