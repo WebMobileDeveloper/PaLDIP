@@ -567,7 +567,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                     });
                     var countfeeds = $scope.feedbackquestions.length;
                     $scope.tscores = [];
-                    var totalsocre = firebase.database().ref('Feedbacks/' + $scope.questionkey + '/' + uid);
+                    var totalsocre = firebase.database().ref('Feedbacks/' + $scope.questionkey + '/' + user.uid);
                     var scoreindex = 0;
                     totalsocre.on('value', function (snapshot) {
                         snapshot.forEach(function (childSnapshot) {
