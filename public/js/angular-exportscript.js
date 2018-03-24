@@ -68,11 +68,8 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 			$scope.lodingfinished = true;
 			$scope.safeApply();
 		}, 1000)
-
 	}
-
-
-
+	
 	$scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
 		$scope.answers = [];
 		var answers = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');

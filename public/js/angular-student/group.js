@@ -50,9 +50,16 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 	//Discriminate
 	$scope.discrimination = function () {
+		if(!$scope.groupcode){
+			$scope.error("Please input group code!");
+			return;
+		}
 		var groupcode = $scope.groupcode.split("/")[0];
 		var teacher_id = $scope.groupcode.split("/")[1];
-
+		if(!teacher_id){
+			$scope.error("Invalid format group code!");
+			return;
+		}
 		var existinggroup = firebase.database().ref('Groups').child(teacher_id).child(groupcode);
 		var flag = 0;
 		existinggroup.on('value', function (snapshot) {

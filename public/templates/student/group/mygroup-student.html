@@ -34,47 +34,45 @@
 						<span class="glyphicon glyphicon-log-out"></span> Sign Out </a>
 				</li>
 			</ul>
-			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
-				<!---->
-				<li>
-					<a href="../studentmain.html">
-						<span class="glyphicon glyphicon-chevron-left"></span> Back </a>
-				</li>
-			</ul>
 		</div>
 	</nav>
-	<div class="main" ng-init="getStudentGroups()">
-
-		<div class="row" style="background-color: palevioletred;width:110%">
-
-			<div class="col-md-6 col-md-offset-1 title texteffect" style="font-size: 30px;color:white">
-				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Group Name</div>
-				</md-input-container>
-			</div>
-			<div class="col-md-4 qtdetails title texteffect" style="font-size: 30px;color:white">
-				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Key</div>
-				</md-input-container>
+	<div style="background-color: palevioletred; padding: 10px 0px;">
+		<div class="col-md-6 col-md-offset-3 title texteffect" style="font-size: 30px;color:white;text-align: center;">
+			<div>My Groups</div>
+		</div>
+		<a class="btn btn-success" href="./Joingroup.html" style="font-size: 21px; font-weight: bold;">
+			Join Group
+		</a>
+	</div>
+	<div class="main container" ng-init="getStudentGroups()">
+		<div class="row" ng-repeat="obj in studentgroups" ng-click="studentGroupDetails(obj)">
+			<div class="groupdetails roweffect">
+				<div style="margin-top:24px;text-align: center;">&nbsp;&nbsp;&nbsp;{{obj["groupname"]}}</div>
 			</div>
 		</div>
-		<div class="row" ng-repeat="obj in studentgroups" style="background-color: lightgray;margin-top: 2px;width:110%" ng-click="studentGroupDetails(obj)">
-
-			<div class="col-md-6 col-md-offset-1 groupdetails roweffect">
-				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj["groupname"]}}</div>
-				</md-input-container>
-			</div>
-			<div class="col-md-3 qtdetails groupkey roweffect">
-				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj["group_id"]}}</div>
-				</md-input-container>
-			</div>
-		</div>
-
 	</div>
 </body>
 <style>
+	html,body {
+		background-color: rgba(255,255,255,0.1);
+	}
+
+	.navbar {
+		margin-bottom: 0px;
+	}
+
+	.main {
+		height: calc(100% - 160px);
+		overflow-y: auto;
+		overflow-x: hidden;
+		margin-top: 20px;
+	}
+
+	.main .row {
+		background-color: lightgray;
+		margin-bottom: 5px;
+	}
+
 	.groupdetails {
 		border-radius: 3px;
 		min-height: 40px;
@@ -100,11 +98,6 @@
 		font-size: 20px;
 	}
 
-	md-input-container {
-		width: 80%;
-		margin-left: 10%
-	}
-
 	#exportbtn:hover {
 		color: #fcad4e;
 	}
@@ -119,6 +112,23 @@
 		/* Safari */
 		animation: spin 2s linear infinite;
 		margin-left: 50%;
+	}
+
+	.typequestion {
+		cursor: pointer;
+	}
+
+	.texteffect {
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		text-shadow: 3px 4px #e6b3ff;
+		font-weight: bold;
+		font-size: 44px;
+	}
+
+	.roweffect {
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		text-shadow: 1px 2px #e6b3ff;
+		font-weight: bold;
 	}
 
 	/* Safari */
@@ -139,27 +149,6 @@
 		100% {
 			transform: rotate(360deg);
 		}
-	}
-
-	.typequestion {
-		cursor: pointer;
-	}
-
-	.texteffect {
-		font-family: "Comic Sans MS", cursive, sans-serif;
-		text-shadow: 3px 4px #e6b3ff;
-		font-weight: bold;
-		font-size: 44px;
-	}
-
-	.roweffect {
-		font-family: "Comic Sans MS", cursive, sans-serif;
-		text-shadow: 3px 4px #e6b3ff;
-		font-weight: bold;
-	}
-
-	.main {
-		width: calc(100% - 50px);
 	}
 </style>
 

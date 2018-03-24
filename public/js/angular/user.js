@@ -65,12 +65,11 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							$scope.safeApply()
 						}
 						if (curusertype == 'Student')
-							window.location.href = './templates/student/studentmain.html';
+							window.location.href = './templates/student/group/mygroup-student.html';
 						if (curusertype == 'Admin')
 							window.location.href = './templates/common/approval.html';
 					}
 				});
-
 			}).catch(function (error) {
 				$scope.error(error.message)
 				$scope.safeApply();
