@@ -49,15 +49,21 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="loader" ng-hide="lodingfinished"></div>
-	<div class="main">
+
+	<div ng-hide="loadingfinished">
+		<div class="loader"></div>
+	</div>
+	<div ng-show="loadingfinished && noAnswerMessage" class="no-data">
+		{{noAnswerMessage}}
+	</div>
+	<div class="main" ng-show="loadingfinished && !noAnswerMessage">
 		<button class="btn btn-link" ng-click="exportToExcel('#table-1')">
 			<span class="glyphicon glyphicon-share"></span> Export to Excel
 		</button>
 		<table class="table table-bordered datatable" id="table-1">
 			<thead>
 				<tr>
-					<th colspan="{{(feedtextlimit==0)?8:feedtextlimit+9}}" style="text-align:center">{{exportQuestionsentence}}</th>
+					<th colspan="{{(feedtextlimit==0)?8:feedtextlimit+9}}" style="text-align:center">{{exportQuestionsentence}}{{loadingfinished}}</th>
 				</tr>
 				<tr>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">User</th>
@@ -107,6 +113,16 @@
 		max-width: 1650px;
 
 
+	}
+
+	.no-data {
+		margin: 100px auto;
+		width: 500px;
+		text-align: center;
+		font-size: 3em;
+		color: #fd6167;
+		font-style: italic;
+		font-weight: bold;
 	}
 
 	.loader {

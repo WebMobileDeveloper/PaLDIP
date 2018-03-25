@@ -234,11 +234,11 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                     break;
                 case 'TextAnswers':
                     localStorage.setItem("questionsDBname", 'TextQuestions');
-                    window.location.href = './submitOthersAnswer.html';
+                    window.location.href = './submitTextAnswer.html';
                     break;
                 case 'DropdownAnswers':
                     localStorage.setItem("questionsDBname", 'DropdownQuestions');
-                    window.location.href = './submitOthersAnswer.html';
+                    window.location.href = './submitDropdownAnswer.html';
                     break;
                 case 'SlideAnswers':
                     localStorage.setItem("questionsDBname", 'SlideQuestions');
@@ -269,7 +269,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
     }
     //Submit Answer about selected question
     $scope.saveanswer = function () {
-
+        console.log($scope.currAnswer)
         if ($scope.currAnswer == undefined) {
             if ($scope.TextType) {
                 $scope.warning('Please Input your Answer.');
@@ -659,17 +659,11 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
 
     //Get Dropdown type options
     $scope.getdropdownoptions = function () {
-        switch ($scope.questionsDBname) {
-            case "DropdownQuestions":
-                $scope.options = [];
-                var optiondata = firebase.database().ref($scope.questionsDBname + '/' + $scope.questionkey);
-                optiondata.on('value', function (snapshot) {
-                    $scope.options = snapshot.val()['options'];
-
-                });
-                break;
-        }
-
+        $scope.options = [];
+        var optiondata = firebase.database().ref($scope.questionsDBname + '/' + $scope.questionkey);
+        optiondata.on('value', function (snapshot) {
+            $scope.options = snapshot.val()['options'];
+        });
     }
 
     $scope.applyAnswer = function (e) {

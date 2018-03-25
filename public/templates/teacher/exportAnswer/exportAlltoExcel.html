@@ -49,8 +49,13 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="loader" ng-hide="lodingfinished"></div>
-	<div class="main">
+	<div ng-hide="loadingfinished">
+		<div class="loader"></div>
+	</div>
+	<div ng-show="loadingfinished && noAnswerMessage" class="no-data">
+		{{noAnswerMessage}}
+	</div>
+	<div class="main" ng-show="loadingfinished && !noAnswerMessage">
 		<button class="btn btn-link" ng-click="exportToExcel('#table-1')">
 			<span class="glyphicon glyphicon-share"></span> Export to Excel
 		</button>
@@ -106,6 +111,16 @@
 		max-width: 1650px;
 
 
+	}
+
+	.no-data {
+		margin: 100px auto;
+		width: 500px;
+		text-align: center;
+		font-size: 3em;
+		color: #fd6167;
+		font-style: italic;
+		font-weight: bold;
 	}
 
 	.loader {

@@ -55,7 +55,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 		var exportQuestionKey = localStorage.getItem("exportQuestionKey");
 		$scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
 		$scope.databasename = localStorage.getItem("databasename");
-		$scope.lodingfinished = false;
+		$scope.loadingfinished = false;
 		setTimeout(function () {
 			var currentuser = firebase.auth().currentUser;
 			if (currentuser == null) {
@@ -65,7 +65,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 				}, 1000);
 			}
 			$scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence)
-			$scope.lodingfinished = true;
+			$scope.loadingfinished = true;
 			$scope.safeApply();
 		}, 1000)
 	}
@@ -158,7 +158,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 	$scope.initExportAll = function () {
 		$scope.hidefeedfield = true;
 		$scope.databasename = localStorage.getItem("databasename");
-		$scope.lodingfinished = false;
+		$scope.loadingfinished = false;
 		setTimeout(function () {
 			var currentuser = firebase.auth().currentUser;
 			if (currentuser == null) {
@@ -168,7 +168,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 				}, 1000);
 			}
 			$scope.getAllAnswers()
-			$scope.lodingfinished = true; $scope.safeApply();
+			$scope.loadingfinished = true; $scope.safeApply();
 		}, 1000)
 	}
 	$scope.getAllAnswers = function () {

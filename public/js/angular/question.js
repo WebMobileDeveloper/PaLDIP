@@ -22,7 +22,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     $scope.hideindex = false;
     $scope.deletingprogresskey = false;
     $scope.feedtextlimit = 0;
-
+    $scope.totalQuestionCount = 0;
     $scope.exportToExcel = function (tableId) { // ex: '#my-table'
         $scope.exportHref = Excel.tableToExcel(tableId, 'sheet name');
         $timeout(function () { location.href = $scope.exportHref; }, 100); // trigger download
@@ -775,139 +775,69 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         var exportQuestionKey = localStorage.getItem("exportQuestionKey");
         $scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
         $scope.databasename = localStorage.getItem("databasename");
-        $scope.lodingfinished = false;
-        // firebase.auth().onAuthStateChanged(function (user) {
-        //     if (user) {
-        $scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence)
-        $scope.lodingfinished = true;
-        $scope.safeApply();
-        //     } else {
-        //         $scope.error("You need to login!");
-        //     }
-        // });
+        $scope.loadingfinished = false;
+        $scope.answers = [];
+        $scope.totalLoopCount=0;
+        $scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence);
     }
 
     $scope.initExportAll = function () {
         $scope.hidefeedfield = true;
         $scope.databasename = localStorage.getItem("databasename");
-        $scope.lodingfinished = false;
-        // firebase.auth().onAuthStateChanged(function (user) {
-        //     if (user) {
+        $scope.loadingfinished = false;
+        $scope.answers = [];
         $scope.getAllAnswers();
-        $scope.lodingfinished = true;
-        $scope.safeApply();
-        //     } else {
-        //         $scope.error("You need to login!");
-        //     }
-        // });
     }
     $scope.getAllAnswers = function () {
-        $scope.answers = [];
         var questions = firebase.database().ref($scope.databasename);
         questions.on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                var exportQuestionKey = childSnapshot.key;
-                $scope.getAnswers(exportQuestionKey, childSnapshot.val()['question']);
-            });
-        })
+            $scope.totalLoopCount = snapshot.numChildren();
+            if ($scope.totalLoopCount == 0) {
+                $scope.loadingfinished = true;
+                $scope.noAnswerMessage = "There isn't any questions.";
+                $scope.safeApply();
+            } else {
+                snapshot.forEach(function (childSnapshot) {
+                    $scope.totalLoopCount--;
+                    var exportQuestionKey = childSnapshot.key;
+                    $scope.getAnswers(exportQuestionKey, childSnapshot.val()['question']);
+                });
+            }
+        });
     }
-    // $scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
-    //     $scope.answers = [];
-    // 	var answers = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
-    // 	answers.on('value', function (snapshot) {
-    // 		$scope.feedtextlimit = 0;
-    // 		var resultaverage;
-    // 		snapshot.forEach(function (childSnapshot) {
-    // 			var answerkey = childSnapshot.key;
-    //             //Get Feedback Texts and max count                
 
-    // 			if ($scope.databasename == 'Answers') {
-    // 				$scope.hidefeedfield = false;
-    // 				var totalfeedtexts = firebase.database().ref('FeedbackTexts/' + exportQuestionKey + '/' + answerkey);
-    // 				$scope.texts = [];
-    // 				$scope.thcols = [];
-    // 				totalfeedtexts.on('value', function (snapshot) {
-    // 					if (!snapshot.val()) {
-    // 						$scope.texts.push('');
-    // 					} else {
-    // 						snapshot.forEach(function (feedsnap) {
-    // 							$scope.texts.push(feedsnap.val());								
-    // 						});
-    // 					}
-    // 					if ($scope.texts.length > $scope.feedtextlimit)
-    // 						$scope.feedtextlimit = $scope.texts.length;					
-    // 				});
-    // 				//Get Average score
-    // 				var totalsumscore = 0;
-    // 				var countscore = 0;
-    // 				var totalsocre = firebase.database().ref('Feedbacks/' + exportQuestionKey + '/' + answerkey);
-    // 				totalsocre.on('value', function (snapshot1) {
-    // 					snapshot1.forEach(function (childSnapshot) {
-    // 						for (var t = 0; t < childSnapshot.val().length; t++) {
-    // 							totalsumscore += childSnapshot.val()[t]
-    // 							countscore++;
-    // 						}
-    // 					});
-    // 				});
-    // 			}else{
-    //                 $(".detachingfield").detach();
-    //             }
 
-    // 			//GetUser's Profile
-    // 			var userProfile = firebase.database().ref('Users/' + answerkey);
-    // 			var profileinformation;
-    // 			$scope.profileinformation = [];
-    // 			userProfile.on('value', function (snapshot) {
-    // 				profileinformation = snapshot.val();
-    // 			});
-    // 			//Combination
-    // 			setTimeout(function () {
-    // 				if (countscore == 0 || totalsumscore == 0) resultaverage = 0;
-    // 				else {
-    // 					resultaverage = (totalsumscore / countscore).toFixed(1);
-    // 				}
-    // 				setTimeout(function () {
-    // 					for (var k = 0; k < $scope.feedtextlimit; k++) {
-    // 						$scope.thcols[k] = '1';
-    // 					}
-    // 					$scope.answers.push({
-    // 						'mail': childSnapshot.val()['mail'],
-    // 						'question': exportQuestionsentence,
-    // 						'answer': childSnapshot.val()['answer'],
-    // 						'datetime': childSnapshot.val()['datetime'],
-    // 						'feedtxt': texts, 'averagescore': resultaverage,
-    // 						'Country': profileinformation.country,
-    // 						'Gender': profileinformation.gender,
-    // 						'Profession': profileinformation.profession,
-    // 						'Age': profileinformation.age,
-    // 						'Mothertongue': profileinformation.countrylanguage,
-    // 						'Groupcode': profileinformation.groupcode
-    // 					});
-
-    // 					$scope.safeApply();
-    // 				}, 2000);
-    // 			}, 1000)
-
-    // 		});
-    // 	})
-    // }
     $scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
-        $scope.answers = [];
-        var answers = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
-        answers.on('value', function (snapshot) {
+        var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
+        answersRef.on('value', function (answersSnapshot) {
             $scope.feedtextlimit = 0;
             var resultaverage;
-            snapshot.forEach(function (childSnapshot) {
-                var answerkey = childSnapshot.key;
-                //Get Feedback Texts and max count
+            $scope.thcols = [];
+            var totalAnswerCount = answersSnapshot.numChildren();
+            if (totalAnswerCount == 0) {                
+                if ($scope.totalLoopCount == 0) {
+                    if ($scope.answers.length == 0) {
+                        $scope.noAnswerMessage = "There isn't any answers.";
+                    }
+                    $scope.loadingfinished = true;
+                    $scope.safeApply();
+                    return;
+                }
+            }
+            $scope.totalLoopCount += totalAnswerCount;
+            answersSnapshot.forEach(function (answerSnapshot) {
+                $scope.totalLoopCount--;
+                var answerkey = answerSnapshot.key;
+                //Get Feedback Texts and max count                              
                 if ($scope.databasename != 'Answers') {
                     $(".detachingfield").detach();
-                }
-                if ($scope.databasename == 'Answers') {
+                    $scope.totalScoreCount = 0;
+                    $scope.getScoreData(true, exportQuestionsentence, answerSnapshot, []);
+                } else {
                     $scope.hidefeedfield = false;
                     var totalfeedtexts = firebase.database().ref('FeedbackTexts/' + exportQuestionKey + '/' + answerkey);
                     var texts = [];
-                    $scope.thcols = [];
+
                     totalfeedtexts.on('value', function (snapshot) {
                         var j = 0;
                         if (!snapshot.val()) {
@@ -922,57 +852,74 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                         if (j > $scope.feedtextlimit)
                             $scope.feedtextlimit = j;
                         $scope.texts = texts;
-                    });
-                    //Get Average score
-                    var totalsumscore = 0;
-                    var countscore = 0;
-                    var totalsocre = firebase.database().ref('Feedbacks/' + exportQuestionKey + '/' + answerkey);
-                    totalsocre.on('value', function (snapshot1) {
-                        snapshot1.forEach(function (childSnapshot) {
-                            for (var t = 0; t < childSnapshot.val().length; t++) {
-                                totalsumscore += childSnapshot.val()[t]
-                                countscore++;
+
+                        //Get Average score
+                        var socreRef = firebase.database().ref('Feedbacks/' + exportQuestionKey + '/' + answerkey);
+                        socreRef.on('value', function (scoreSnapshot) {
+                            var totalScoreCount = scoreSnapshot.numChildren();
+                            if (totalScoreCount == 0) {
+                                $scope.getScoreData(true, exportQuestionsentence, answerSnapshot, texts);
+                            } else {
+                                var i = 0;
+                                scoreSnapshot.forEach(function (score) {
+                                    i++;
+                                    $scope.getScoreData((i == totalScoreCount), exportQuestionsentence, answerSnapshot, texts, score);
+                                });
                             }
                         });
                     });
                 }
-
-                //GetUser's Profile
-                var userProfile = firebase.database().ref('Users/' + answerkey);
-                var profileinformation;
-                $scope.profileinformation = [];
-                userProfile.on('value', function (snapshot) {
-                    profileinformation = snapshot.val();
-                });
-                //Combination
-                setTimeout(function () {
-                    if (countscore == 0 || totalsumscore == 0) resultaverage = 0;
-                    else {
-                        resultaverage = (totalsumscore / countscore).toFixed(1);
-                    }
-                    setTimeout(function () {
-                        for (var k = 0; k < $scope.feedtextlimit; k++) {
-                            $scope.thcols[k] = '1';
-                        }
-                        $scope.answers.push({
-                            'mail': childSnapshot.val()['mail'],
-                            'question': exportQuestionsentence,
-                            'answer': childSnapshot.val()['answer'],
-                            'datetime': childSnapshot.val()['datetime'],
-                            'feedtxt': texts, 'averagescore': resultaverage,
-                            'Country': profileinformation.country,
-                            'Gender': profileinformation.gender,
-                            'Profession': profileinformation.profession,
-                            'Age': profileinformation.age,
-                            'Mothertongue': profileinformation.countrylanguage,
-                            'Groupcode': profileinformation.groupcode
-                        });
-
-                        $scope.safeApply();
-                    }, 2000);
-                }, 1000)
-
             });
         })
+    }
+    $scope.getScoreData = function (lastScore, exportQuestionsentence, answerSnapshot, texts, score = undefined) {
+        var totalsumscore = 0;
+        var countscore = 0;
+        var resultaverage = 0;
+
+        if (score) {
+            for (var t = 0; t < score.val().length; t++) {
+                totalsumscore += score.val()[t];
+                countscore++;
+            }
+        }
+
+        //GetUser's Profile
+        if (lastScore) {
+            var userProfile = firebase.database().ref('Users/' + answerSnapshot.key);
+            var profileinformation = [];
+            userProfile.on('value', function (snapshot) {
+                profileinformation = snapshot.val();
+                if (countscore != 0 && totalsumscore != 0) {
+                    resultaverage = (totalsumscore / countscore).toFixed(1);
+                }
+                for (var k = 0; k < $scope.feedtextlimit; k++) {
+                    $scope.thcols[k] = '1';
+                }
+                $scope.answers.push({
+                    'mail': answerSnapshot.val()['mail'],
+                    'question': exportQuestionsentence,
+                    'answer': answerSnapshot.val()['answer'],
+                    'datetime': answerSnapshot.val()['datetime'],
+                    'feedtxt': texts,
+                    'averagescore': resultaverage,
+                    'Country': profileinformation.country,
+                    'Gender': profileinformation.gender,
+                    'Profession': profileinformation.profession,
+                    'Age': profileinformation.age,
+                    'Mothertongue': profileinformation.countrylanguage,
+                    'Groupcode': profileinformation.groupcode
+                });
+                // console.log("Question:",$scope.totalQuestionCount,$scope.totalAnswerCount)
+
+                if ($scope.totalLoopCount == 0) {
+                    if ($scope.answers.length == 0) {
+                        $scope.noAnswerMessage = "There isn't any answers.";
+                    }
+                    $scope.loadingfinished = true;
+                    $scope.safeApply();
+                }
+            });
+        }
     }
 });

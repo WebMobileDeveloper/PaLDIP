@@ -7,7 +7,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.questionplan = '';
 	$scope.hideindex = false;
 	$scope.deletingprogresskey = false;
-	$scope.lodingfinished = true;
+	$scope.loadingfinished = true;
 
 	$scope.warning = function (msg) {
 		toaster.pop('warning', "Warning", msg, 3000);
@@ -54,7 +54,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					$scope.groups = [];
 					snapshot.forEach(function (childSnapshot) {
 						$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
-					});
+					});					
 					$scope.safeApply();
 				});
 			} else {
@@ -185,7 +185,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.setsInGroup = {};
 		$scope.grouptitle = localStorage.getItem("groupname");
 
-		$scope.lodingfinished = false;
+		$scope.loadingfinished = false;
 		var groupkey = localStorage.getItem("groupkey").split("/")[0];
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
@@ -286,11 +286,11 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 				});
 
-				$scope.lodingfinished = true;
+				$scope.loadingfinished = true;
 				$scope.safeApply();
 			} else {
 				$scope.error("You need to login!");
-				$scope.lodingfinished = true;
+				$scope.loadingfinished = true;
 				$scope.safeApply();
 			}
 
@@ -312,7 +312,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
 		$scope.databasename = localStorage.getItem("databasename");
 
-		$scope.lodingfinished = false;
+		$scope.loadingfinished = false;
 		// firebase.auth().onAuthStateChanged(function (user) {
 		//     if (user) {
 		$scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence);
@@ -329,7 +329,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var answers = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
 		answers.on('value', function (snapshot) {
 			if (!snapshot.val()) {
-				$scope.lodingfinished = true;
+				$scope.loadingfinished = true;
 				$scope.safeApply();
 			}
 
@@ -409,7 +409,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					}, 2000);
 				}, 1000)
 
-				$scope.lodingfinished = true;
+				$scope.loadingfinished = true;
 			});
 
 

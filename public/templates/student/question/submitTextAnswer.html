@@ -29,7 +29,7 @@
 	<title>Submit Unswer</title>
 </head>
 
-<body data-ng-controller="MainCtrl" ng-init="getdropdownoptions()">
+<body data-ng-controller="MainCtrl">
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
@@ -56,20 +56,12 @@
 		</md-input-container>
 	</div>
 	<hr style="margin-top: 20px;border: 1px solid gray " />​
-	<div class="row" ng-hide="previousanswer" style="margin-top: 10px">
-		<!-- render if answer is text type -->
-		
-		<md-input-container flex ng-if="TextType">  
+	<div class="row" ng-hide="previousanswer" style="margin-top: 10px">		
+		<md-input-container flex>  
 			<label>Type Your Answer (e.g. X)</label>
 			<input ng-model="currAnswer" style="border-radius:5px;" type="text" required/>
 		</md-input-container>
-		<!-- render if answer is dropdown type -->
-		<md-input-container flex ng-if="!TextType">
-			  <md-select ng-model="currAnswerKey" placeholder="Select a answer" ng-change="applyAnswer(currAnswerKey)">
-				<md-option  ng-repeat="opt in options track by $index" ng-value="$index">{{ opt }}</md-option>
-			  </md-select>
-
-		</md-input-container>
+		
 	</div>
 	<div class="row" ng-show="previousanswer">
 		<h4 style="text-align:center">You already submitted answer about this question before.</h4>
@@ -82,8 +74,8 @@
 	<hr style="border: 1px solid gray" />​
 	<div class="row">
 		<md-input-container flex style="text-align:center;">
-			<button class="btn btn-primary" style="width:20%;" ng-click="saveanswer()" ng-hide="previousanswer">Submit</button>
-			<a class="btn btn-link" href="./questions for students.html" style="margin-left:10%">Back</a>
+			<button class="btn btn-primary" style="width:20%;margin-right:10%;" ng-click="saveanswer()" ng-hide="previousanswer" >Submit</button>
+			<a class="btn btn-link" href="./questions for students.html" >Back</a>
 			<a class="btn btn-link" ng-click="nextpage()" style="margin-left:10%" ng-show="previousanswer">Next</a>
 		</md-input-container>
 	</div>
