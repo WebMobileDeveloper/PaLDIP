@@ -55,8 +55,8 @@
 	</div>
 	<div class="row" style="text-align:center; display:flex;">
 		<div class="chip-row col-md-6 col-md-offset-2" ng-init="getTags()">
-			<md-chips ng-model="selectedTags" md-autocomplete-snap="" md-transform-chip="transformChip($chip)" md-require-match="false">
-				<md-autocomplete md-search-text="searchText" md-items="item in querySearch(searchText)" md-item-text="item.name" placeholder="Search or input Tags">
+			<md-chips ng-model="selectedTags" md-autocomplete-snap="" md-transform-chip="transformChip($chip)" md-require-match="false" readonly="!tagEditable">
+				<md-autocomplete md-search-text="searchText" md-items="item in querySearch(searchText)" md-item-text="item.name" placeholder="input new tag">
 					<span md-highlight-text="searchText">{{item.name}}</span>
 				</md-autocomplete>
 				<md-chip-template>
@@ -67,7 +67,7 @@
 			</md-chips>
 		</div>
 		<div class="col-md-2 button-div">
-			<a>
+			<a ng-show="tagEditable">
 				<button class="btn btn-primary" style="margin-right:20px;" ng-click="updateTags()">Update Tags</button>
 			</a>
 			<a href="../createQuestion/choiceCreateQuestionType.html">

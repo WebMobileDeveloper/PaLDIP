@@ -55,16 +55,16 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					$scope.groups = [];
 					snapshot.forEach(function (childSnapshot) {
 						$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
-					});	
-					$scope.loadingfinished = true;	
-					if($scope.groups.length==0){
+					});
+					$scope.loadingfinished = true;
+					if ($scope.groups.length == 0) {
 						$scope.warning("There isn't any group!");
-					}			
+					}
 					$scope.safeApply();
 				});
 			} else {
 				$scope.error("You need to login!");
-				$scope.loadingfinished = true;				
+				$scope.loadingfinished = true;
 				$scope.safeApply();
 			}
 		});
@@ -292,6 +292,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Slide Type'
 								};
 							});
+							$scope.safeApply();
 						});
 
 					});
@@ -318,6 +319,15 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		}, 1000);
 	}
 
+	$scope.exportDropdownQuestionDatas = function (key, question, dbname) {
+		localStorage.setItem("exportQuestionKey", key);
+		localStorage.setItem("exportQuestionsentence", question);
+		localStorage.setItem("databasename", dbname);
+		setTimeout(function () {
+			window.location.href = './responseOfDropdownAnswer.html';
+		}, 1000);
+	}
+
 	$scope.initExport = function () {
 		$scope.hidefeedfield = true;
 		var exportQuestionKey = localStorage.getItem("exportQuestionKey");
@@ -325,15 +335,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.databasename = localStorage.getItem("databasename");
 
 		$scope.loadingfinished = false;
-		// firebase.auth().onAuthStateChanged(function (user) {
-		//     if (user) {
 		$scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence);
-
 		$scope.safeApply();
-		//     } else {
-		//         $scope.error("You need to login!");
-		//     }
-		// });
 	}
 
 	$scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
@@ -427,4 +430,123 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 		});
 	}
+
+	$scope.viewQuestionDropdownanswer = function () {
+
+		var exportQuestionKey = localStorage.getItem("exportQuestionKey");
+		$scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
+		$scope.databasename = localStorage.getItem("databasename");
+
+		$scope.loadingfinished = false;
+		$scope.chartLavels = [];
+		$scope.chartValues = [];
+		var totalAnswers = 0;
+		var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
+		answersRef.on('value', function (snapshot) {
+			snapshot.forEach(function (answer) {
+				var index = $scope.chartLavels.indexOf(answer.val().answer);
+				if (index === -1) {
+					$scope.chartLavels.push(answer.val().answer);
+					$scope.chartValues.push(1);
+				} else {
+					$scope.chartValues[index]++;
+				}
+				totalAnswers++;
+			});
+			var i = 0;
+			for (i = 0; i < $scope.chartLavels.length; i++) {
+				//$scope.chartValues[i] = Math.round($scope.chartValues[i] / totalAnswers * 1000) / 10;
+				if($scope.chartLavels[i].length>53){
+					$scope.chartLavels[i] = $scope.chartLavels[i].substring(0,49)+" ...";
+				}
+			}
+			if ($scope.chartValues.length == 0) {
+				toaster.pop("error", "Error", "Sorry,There is not any data!", 1000);
+				$scope.safeApply();
+			}
+			$scope.paintgraph($scope.chartLavels, $scope.chartValues, "pieChart");
+		});	
+	}
+
+	$scope.paintgraph = function (title, value, Dom) {		
+		var canvas = document.getElementById(Dom);
+		var ctx = canvas.getContext("2d");
+		// ==========update chart================
+		if ($scope.myChart) {
+			$scope.myChart.data.labels = title;
+			$scope.myChart.data.datasets[0].data = value;
+			$scope.myChart.update();
+			return;
+		}
+
+		//=========== create chart=================
+		$scope.myChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: title,
+				datasets: [{
+					label: '# of Votes',
+					data: value,
+					backgroundColor: [
+						'rgba(230, 25, 75, 0.3)',
+						'rgba(47, 71, 255, 0.2)',
+						'rgba(255, 225, 25, 0.4)',
+						'rgba(129, 72, 68, 0.2)',
+						'rgba(60, 180, 75, 0.6)',
+						'rgba(245, 130, 48, 0.5)',
+						'rgba(145, 30, 180, 0.4)',
+						'rgba(70, 240, 240, 0.3)',
+						'rgba(0, 128, 128, 0.5)',
+						'rgba(230, 190, 255, 0.3)',
+						'rgba(170, 110, 40, 0.4)',
+						'rgba(170, 255, 195, 0.2)',
+						'rgba(255, 215, 180, 0.6)',
+						'rgba(240, 50, 230, 0.7)',
+						'rgba(210, 245, 60, 0.2)',
+						'rgba(255, 206, 86, 0.7)',
+						'rgba(75, 192, 192, 0.5)',
+						'rgba(153, 102, 255, 0.3)',
+						'rgba(255, 159, 64, 0.4)',
+						'rgba(255, 99, 132, 0.2)',
+						'rgba(54, 162, 235, 0.6)'
+					],
+					borderColor: [
+						'rgba(230, 25, 75, 1)',
+						'rgba(47, 71, 255, 1)',
+						'rgba(255, 225, 25, 1)',
+						'rgba(129, 72, 68, 1)',
+						'rgba(60, 180, 75, 1)',
+						'rgba(245, 130, 48, 1)',
+						'rgba(145, 30, 180, 1)',
+						'rgba(70, 240, 240,1)',
+						'rgba(0, 128, 128, 1)',
+						'rgba(230, 190, 255, 1)',
+						'rgba(170, 110, 40, 1)',
+						'rgba(170, 255, 195, 1)',
+						'rgba(255, 215, 180, 1)',
+						'rgba(240, 50, 230,1)',
+						'rgba(210, 245, 60, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)',
+						'rgba(153, 102, 255, 1)',
+						'rgba(255, 159, 64, 1)',
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+					
+				}
+			}
+		});
+	}
+
 });

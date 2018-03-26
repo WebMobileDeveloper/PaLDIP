@@ -724,19 +724,19 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
             for (var k = 0; k < mainvalues.length; k++) {
                 if (mainlabels[k] == undefined)
                     continue;
-                $scope.mainvalues.push(mainvalues[k] / maincount * 100);
+                $scope.mainvalues.push(Math.round(mainvalues[k] / maincount * 100*10)/10);
                 $scope.mainlabels.push(mainlabels[k]);
             }
             for (var k = 0; k < othervalues.length; k++) {
                 if (otherlabels[k] == undefined)
                     continue;
-                $scope.othervalues.push(othervalues[k] / othercount * 100);
+                $scope.othervalues.push(Math.round(othervalues[k] / othercount * 100*10)/10);
                 $scope.otherlabels.push(otherlabels[k]);
             }
             for (var k = 0; k < totalvalues.length; k++) {
                 if (totallabels[k] == undefined)
                     continue;
-                $scope.totalvalues.push(totalvalues[k] / totalcount * 100);
+                $scope.totalvalues.push(Math.round(totalvalues[k] / totalcount * 100*10)/10);
                 $scope.totallabels.push(totallabels[k]);
             }
 
@@ -786,12 +786,21 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
         $scope.safeApply();
     }
     $scope.paintgraph = function (title, value, Dom) {
-
         if (title.length == 0) {
             toaster.pop("error", "Error", "Sorry,There is not any data!", 1000);
         }
-        var ctx = document.getElementById(Dom).getContext('2d');
-        var myChart = new Chart(ctx, {
+        var canvas = document.getElementById(Dom);
+        var ctx = canvas.getContext("2d");
+        // ==========update chart================
+        if ($scope.myChart) {
+            $scope.myChart.data.labels = title;
+            $scope.myChart.data.datasets[0].data = value;
+            $scope.myChart.update();
+            return;
+        }
+
+        //=========== create chart=================
+        $scope.myChart = new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: title,
@@ -799,42 +808,44 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                     label: '# of Votes',
                     data: value,
                     backgroundColor: [
+                        'rgba(230, 25, 75, 0.3)',
+                        'rgba(47, 71, 255, 0.2)',
+                        'rgba(255, 225, 25, 0.4)',
+                        'rgba(129, 72, 68, 0.2)',
+                        'rgba(60, 180, 75, 0.6)',
+                        'rgba(245, 130, 48, 0.5)',
+                        'rgba(145, 30, 180, 0.4)',
+                        'rgba(70, 240, 240, 0.3)',
+                        'rgba(0, 128, 128, 0.5)',
+                        'rgba(230, 190, 255, 0.3)',
+                        'rgba(170, 110, 40, 0.4)',
+                        'rgba(170, 255, 195, 0.2)',
+                        'rgba(255, 215, 180, 0.6)',
+                        'rgba(240, 50, 230, 0.7)',
+                        'rgba(210, 245, 60, 0.2)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.3)',
+                        'rgba(255, 159, 64, 0.4)',
                         'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
+                        'rgba(54, 162, 235, 0.6)'
                     ],
                     borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
+                        'rgba(230, 25, 75, 1)',
+                        'rgba(47, 71, 255, 1)',
+                        'rgba(255, 225, 25, 1)',
+                        'rgba(129, 72, 68, 1)',
+                        'rgba(60, 180, 75, 1)',
+                        'rgba(245, 130, 48, 1)',
+                        'rgba(145, 30, 180, 1)',
+                        'rgba(70, 240, 240,1)',
+                        'rgba(0, 128, 128, 1)',
+                        'rgba(230, 190, 255, 1)',
+                        'rgba(170, 110, 40, 1)',
+                        'rgba(170, 255, 195, 1)',
+                        'rgba(255, 215, 180, 1)',
+                        'rgba(240, 50, 230,1)',
+                        'rgba(210, 245, 60, 1)',
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',

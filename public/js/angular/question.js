@@ -229,6 +229,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     $scope.showQuestionsInSet = function (set) {
         localStorage.setItem('questionsetkey', set.key);
         localStorage.setItem('questionsetName', set.setname);
+        localStorage.setItem('tagEditable', set.createdByMe);
         window.location.href = './viewquestion/questions.html';
     }
 
@@ -505,7 +506,10 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     };
 
     $scope.creatDropdownQuestion = function () {
-        if ($scope.choices[$scope.choices.length * 1 - 1].name == undefined) $scope.removeChoice()
+        console.log($scope.choices);
+        if ($scope.choices.length > 0) {
+            if ($scope.choices[$scope.choices.length - 1].name == undefined) $scope.removeChoice();
+        }
 
         if ($scope.dropdownQuestion == '' || $scope.dropdownQuestion == undefined) {
             $scope.error('Please Input Question!');
@@ -578,9 +582,10 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     };
 
     $scope.creatSlideQuestion = function () {
-        if ($scope.slidequestions[slideindex * 1 - 1].propertyquestion == undefined || $scope.slidequestions[slideindex * 1 - 1].left == undefined || $scope.slidequestions[slideindex * 1 - 1].right == undefined)
-            $scope.removeslideRecord()
-
+        if ($scope.slidequestions.length > 0) {
+            if ($scope.slidequestions[slideindex * 1 - 1].propertyquestion == undefined || $scope.slidequestions[slideindex * 1 - 1].left == undefined || $scope.slidequestions[slideindex * 1 - 1].right == undefined)
+                $scope.removeslideRecord();
+        }
 
         if ($scope.slideQuestion == '' || $scope.slideQuestion == undefined) {
             $scope.error('Please Input Question!');
@@ -611,8 +616,8 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
             $scope.safeApply();
             setTimeout(function () {
                 $scope.reload();
-            }, 500);
-        })
+            }, 1000);
+        });
     }
 
     // =====================================================================================|
@@ -623,10 +628,10 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 
 
     $scope.getAllQuestions = function () {
-
         var questionsetkey = localStorage.getItem("questionsetkey");
         $scope.questionsetName = localStorage.getItem("questionsetName");
-
+        $scope.tagEditable = localStorage.getItem("tagEditable");
+        $scope.tagEditable = ($scope.tagEditable == 'true') ? true : false;
         // ++++++++++++++++++ get Feedback Type Questions ++++++++++++++++++
         $scope.feedbackTypequestions = [];
         var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
@@ -814,31 +819,31 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         $scope.answers = [];
         $scope.getAllAnswers();
     }
-    $scope.getAllAnswers = function () {     
+    $scope.getAllAnswers = function () {
 
-        var questionkeyArrStr =localStorage.getItem("questionkeyArrStr");
+        var questionkeyArrStr = localStorage.getItem("questionkeyArrStr");
         var questionsRef = firebase.database().ref($scope.databasename);
         questionsRef.on('value', function (qtSnapshot) {
             $scope.totalLoopCount = 0;
-            qtSnapshot.forEach(function (childSnapshot) {   
-                var exportQuestionKey = childSnapshot.key;   
+            qtSnapshot.forEach(function (childSnapshot) {
+                var exportQuestionKey = childSnapshot.key;
                 if (questionkeyArrStr.includes(exportQuestionKey)) {
                     $scope.totalLoopCount++;
-                } 
+                }
             });
 
             if ($scope.totalLoopCount == 0) {
                 $scope.loadingfinished = true;
                 $scope.noAnswerMessage = "There isn't any questions.";
                 $scope.safeApply();
-            } else {                
-                qtSnapshot.forEach(function (childSnapshot) {                    
-                   
-                    var exportQuestionKey = childSnapshot.key;   
+            } else {
+                qtSnapshot.forEach(function (childSnapshot) {
+
+                    var exportQuestionKey = childSnapshot.key;
                     if (questionkeyArrStr.includes(exportQuestionKey)) {
                         $scope.totalLoopCount--;
                         $scope.getAnswers(exportQuestionKey, childSnapshot.val()['question']);
-                    } 
+                    }
                 });
             }
         });
@@ -847,7 +852,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 
 
     $scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
-        
+
         var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
         answersRef.on('value', function (answersSnapshot) {
             $scope.feedtextlimit = 0;
@@ -865,7 +870,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                 }
             }
             $scope.totalLoopCount += totalAnswerCount;
-            
+
             answersSnapshot.forEach(function (answerSnapshot) {
                 $scope.totalLoopCount--;
                 var answerkey = answerSnapshot.key;
@@ -914,8 +919,8 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         })
     }
     $scope.getScoreData = function (lastScore, exportQuestionsentence, answerSnapshot, texts, score = undefined) {
-        
-        
+
+
         var totalsumscore = 0;
         var countscore = 0;
         var resultaverage = 0;
@@ -952,9 +957,9 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                     'Age': profileinformation.age,
                     'Mothertongue': profileinformation.countrylanguage,
                     // 'Groupcode': profileinformation.groupcode
-                });            
+                });
 
-                
+
                 if ($scope.totalLoopCount == 0) {
                     if ($scope.answers.length == 0) {
                         $scope.noAnswerMessage = "There isn't any answers.";
