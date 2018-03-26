@@ -691,9 +691,9 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
 
 
 
-        var maincount = 0;
-        var othercount = 0;
-        var totalcount = 0;
+        $scope.maincount = 0;
+        $scope.othercount = 0;
+        $scope.totalcount = 0;
 
         studentgroupkey = localStorage.getItem("studentgroupkey");
 
@@ -708,35 +708,35 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
                     if (!mainvalues[key]) mainvalues[key] = 1;
                     else mainvalues[key] += 1;
                     mainlabels[key] = childSnapshot.val()['answer']
-                    maincount++;
+                    $scope.maincount++;
                 } else {
                     if (!othervalues[key]) othervalues[key] = 1;
                     else othervalues[key] += 1;
                     otherlabels[key] = childSnapshot.val()['answer']
-                    othercount++;
+                    $scope.othercount++;
                 }
                 if (!totalvalues[key]) totalvalues[key] = 1;
                 else totalvalues[key] += 1;
                 totallabels[key] = childSnapshot.val()['answer']
-                totalcount++;
+                $scope.totalcount++;
             });
 
             for (var k = 0; k < mainvalues.length; k++) {
                 if (mainlabels[k] == undefined)
                     continue;
-                $scope.mainvalues.push(Math.round(mainvalues[k] / maincount * 100*10)/10);
+                $scope.mainvalues.push(Math.round(mainvalues[k] / $scope.maincount * 100 * 10) / 10);
                 $scope.mainlabels.push(mainlabels[k]);
             }
             for (var k = 0; k < othervalues.length; k++) {
                 if (otherlabels[k] == undefined)
                     continue;
-                $scope.othervalues.push(Math.round(othervalues[k] / othercount * 100*10)/10);
+                $scope.othervalues.push(Math.round(othervalues[k] / $scope.othercount * 100 * 10) / 10);
                 $scope.otherlabels.push(otherlabels[k]);
             }
             for (var k = 0; k < totalvalues.length; k++) {
                 if (totallabels[k] == undefined)
                     continue;
-                $scope.totalvalues.push(Math.round(totalvalues[k] / totalcount * 100*10)/10);
+                $scope.totalvalues.push(Math.round(totalvalues[k] / $scope.totalcount * 100 * 10) / 10);
                 $scope.totallabels.push(totallabels[k]);
             }
 
@@ -774,13 +774,19 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
         if ($scope.selectedMain) {
             if ($scope.selectedOther) {
                 $scope.chartDescription = "Compared to all groups include your group!";
+                $scope.numberOfAnswers = $scope.totalcount;
+                $scope.safeApply();
                 $scope.paintgraph($scope.totallabels, $scope.totalvalues, "pieChart");
             } else {
                 $scope.chartDescription = "Compared only in your group!";
+                $scope.numberOfAnswers = $scope.maincount;
+                $scope.safeApply();
                 $scope.paintgraph($scope.mainlabels, $scope.mainvalues, "pieChart");
             }
         } else {
             $scope.chartDescription = "Compared to all groups except your group!";
+            $scope.numberOfAnswers = $scope.othercount;
+            $scope.safeApply();
             $scope.paintgraph($scope.otherlabels, $scope.othervalues, "pieChart");
         }
         $scope.safeApply();

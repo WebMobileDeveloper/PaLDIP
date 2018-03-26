@@ -43,13 +43,17 @@
 	</nav>
 	<div class="content">
 		<div class="main" ng-init="viewQuestionDropdownanswer()">
-			<div><b>{{exportQuestionsentence}}</b></div>
+			<div>
+				<b>{{exportQuestionsentence}}</b>
+			</div>
 			<hr/>
 			<div class="row chart-row">
 				<canvas id="pieChart" basechart="" style="width:300px;height:300px; "></canvas>
 			</div>
+
 			<div class="row button-row">
-				<div class="col-md-4 col-md-offset-4">
+				<div class="col-md-6">Number of total Answers:&emsp;<b>{{totalAnswers}}</b></div>
+				<div class="col-md-6">
 					<a class="btn btn-link" href="./questionsInGroup.html">Back</a>
 				</div>
 			</div>

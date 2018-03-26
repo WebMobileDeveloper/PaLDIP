@@ -455,7 +455,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 
 	$scope.viewQuestionDropdownanswer = function () {
-
 		var exportQuestionKey = localStorage.getItem("exportQuestionKey");
 		$scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
 		$scope.databasename = localStorage.getItem("databasename");
@@ -463,7 +462,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.loadingfinished = false;
 		$scope.chartLavels = [];
 		$scope.chartValues = [];
-		var totalAnswers = 0;
+		$scope.totalAnswers = 0;
 		var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
 		answersRef.on('value', function (snapshot) {
 			snapshot.forEach(function (answer) {
@@ -474,7 +473,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				} else {
 					$scope.chartValues[index]++;
 				}
-				totalAnswers++;
+				$scope.totalAnswers++;
 			});
 			var i = 0;
 			for (i = 0; i < $scope.chartLavels.length; i++) {
@@ -487,6 +486,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				toaster.pop("error", "Error", "Sorry,There is not any data!", 1000);
 				$scope.safeApply();
 			}
+			$scope.safeApply();
 			$scope.paintgraph($scope.chartLavels, $scope.chartValues, "pieChart");
 		});
 	}
