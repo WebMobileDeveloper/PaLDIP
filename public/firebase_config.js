@@ -12,6 +12,6 @@
 		projectId: "paldip-a467e",
 		storageBucket: "paldip-a467e.appspot.com",
 		messagingSenderId: "989537263955"
-	};	
+	};  
 	firebase.initializeApp(config);
 }());

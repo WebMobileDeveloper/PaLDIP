@@ -773,14 +773,14 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
     $scope.drawDropdownAnswerChart = function () {
         if ($scope.selectedMain) {
             if ($scope.selectedOther) {
-                $scope.chartDescription = "Compared to all groups except your group!";
+                $scope.chartDescription = "Compared to all groups include your group!";
                 $scope.paintgraph($scope.totallabels, $scope.totalvalues, "pieChart");
             } else {
-                $scope.chartDescription = "Compared to all groups include your group!";
+                $scope.chartDescription = "Compared only in your group!";
                 $scope.paintgraph($scope.mainlabels, $scope.mainvalues, "pieChart");
             }
         } else {
-            $scope.chartDescription = "Compared only in your group!";
+            $scope.chartDescription = "Compared to all groups except your group!";
             $scope.paintgraph($scope.otherlabels, $scope.othervalues, "pieChart");
         }
         $scope.safeApply();
