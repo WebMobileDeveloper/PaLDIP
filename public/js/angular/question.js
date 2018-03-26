@@ -140,7 +140,6 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 
     $scope.getTags = function () {
         $scope.loadTags();
-
         var questionsetkey = localStorage.getItem("questionsetkey");
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
@@ -628,59 +627,96 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 
 
     $scope.getAllQuestions = function () {
+        $scope.loadingfinished = false;
         var questionsetkey = localStorage.getItem("questionsetkey");
         $scope.questionsetName = localStorage.getItem("questionsetName");
         $scope.tagEditable = localStorage.getItem("tagEditable");
         $scope.tagEditable = ($scope.tagEditable == 'true') ? true : false;
+
+
+        $scope.safeApply();
+        var loopCount = 5;
         // ++++++++++++++++++ get Feedback Type Questions ++++++++++++++++++
         $scope.feedbackTypequestions = [];
-        var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
-        qtdata.on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                $scope.feedbackTypequestions.push({ value: childSnapshot.val()['question'], type: 'Feedback Type' });
-            });
-            $scope.safeApply();
-        });
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
+                qtdata.on('value', function (snapshot) {
 
-        // ++++++++++++++++++ get digit Type Questions ++++++++++++++++++
-        $scope.digitTypequestions = [];
-        var qtdata = firebase.database().ref('DigitQuestions').orderByChild("Set").equalTo(questionsetkey);
-        qtdata.on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Digit Type' });
-            });
-            $scope.safeApply();
-        });
+                    snapshot.forEach(function (childSnapshot) {
+                        $scope.feedbackTypequestions.push({ value: childSnapshot.val()['question'], type: 'Feedback Type' });
+                    });
+                    loopCount--;
+                    if (loopCount == 0) {
+                        $scope.loadingfinished = true;
+                    }
+                    $scope.safeApply();
+                });
 
-        // ++++++++++++++++++ get text Type Questions ++++++++++++++++++
-        $scope.textTypequestions = [];
-        var qtdata = firebase.database().ref('TextQuestions').orderByChild("Set").equalTo(questionsetkey);
-        qtdata.on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Text Type' });
-            });
-            $scope.safeApply();
-        });
+                // ++++++++++++++++++ get digit Type Questions ++++++++++++++++++
+                $scope.digitTypequestions = [];
+                var qtdata = firebase.database().ref('DigitQuestions').orderByChild("Set").equalTo(questionsetkey);
+                qtdata.on('value', function (snapshot) {
 
-        // ++++++++++++++++++ get dropdown Type Questions ++++++++++++++++++
-        $scope.dropdownTypequestions = [];
-        var qtdata = firebase.database().ref('DropdownQuestions').orderByChild("Set").equalTo(questionsetkey);
-        qtdata.on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Dropdown Type' });
-            });
-            $scope.safeApply();
-        });
+                    snapshot.forEach(function (childSnapshot) {
+                        $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Digit Type' });
+                    });
+                    loopCount--;
+                    if (loopCount == 0) {
+                        $scope.loadingfinished = true;
+                    }
+                    $scope.safeApply();
+                });
 
-        // ++++++++++++++++++ get slide Type Questions ++++++++++++++++++
-        $scope.slideTypequestions = [];
-        var qtdata = firebase.database().ref('SlideQuestions').orderByChild("Set").equalTo(questionsetkey);
-        qtdata.on('value', function (snapshot) {
+                // ++++++++++++++++++ get text Type Questions ++++++++++++++++++
+                $scope.textTypequestions = [];
+                var qtdata = firebase.database().ref('TextQuestions').orderByChild("Set").equalTo(questionsetkey);
+                qtdata.on('value', function (snapshot) {
 
-            snapshot.forEach(function (childSnapshot) {
-                $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Slide Type' });
-            });
-            $scope.safeApply();
+                    snapshot.forEach(function (childSnapshot) {
+                        $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Text Type' });
+                    });
+                    loopCount--;
+                    if (loopCount == 0) {
+                        $scope.loadingfinished = true;
+                    }
+                    $scope.safeApply();
+                });
+
+                // ++++++++++++++++++ get dropdown Type Questions ++++++++++++++++++
+                $scope.dropdownTypequestions = [];
+                var qtdata = firebase.database().ref('DropdownQuestions').orderByChild("Set").equalTo(questionsetkey);
+                qtdata.on('value', function (snapshot) {
+
+                    snapshot.forEach(function (childSnapshot) {
+                        $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Dropdown Type' });
+                    });
+                    loopCount--;
+                    if (loopCount == 0) {
+                        $scope.loadingfinished = true;
+                    }
+                    $scope.safeApply();
+                });
+
+                // ++++++++++++++++++ get slide Type Questions ++++++++++++++++++
+                $scope.slideTypequestions = [];
+                var qtdata = firebase.database().ref('SlideQuestions').orderByChild("Set").equalTo(questionsetkey);
+                qtdata.on('value', function (snapshot) {
+
+                    snapshot.forEach(function (childSnapshot) {
+                        $scope.digitTypequestions.push({ value: childSnapshot.val()['question'], type: 'Slide Type' });
+                    });
+                    loopCount--;
+                    if (loopCount == 0) {
+                        $scope.loadingfinished = true;
+                    }
+                    $scope.safeApply();
+                });
+            } else {
+                $scope.error("You need to login!");
+                $scope.loadingfinished = true;
+                $scope.safeApply();
+            }
         });
     }
 

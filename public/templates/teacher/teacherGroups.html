@@ -54,69 +54,77 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="main" ng-init="getgroups()">
+	<div class="container" ng-init="getgroups()">
 
 		<div class="row" style="background-color: palevioletred;width:100%">
 
-			<div class="col-md-6 title texteffect" style="font-size: 30px;color:white">
+			<div class="col-md-10 title texteffect" style="font-size: 30px;color:white">
 				<md-input-container flex>
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Group Name</div>
 				</md-input-container>
 			</div>
-			<div class="col-md-4 qtdetails title texteffect" style="font-size: 30px;color:white">
+			<!-- <div class="col-md-4 qtdetails title texteffect" style="font-size: 30px;color:white">
 				<md-input-container flex>
 					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;Key</div>
 				</md-input-container>
-			</div>
+			</div> -->
 			<div class="col-md-2">
 				<a class="btn btn-success" href="./group/createGroup.html" style="margin: 24px 0;font-size: 1.2em;font-weight: 600;">Create Group</a>
 			</div>
 
 		</div>
+		<div class="data-content">
+			<div class="row" ng-repeat="obj in groups" style="background-color: lightgray;margin-top: 2px;width:100%">
+				<div class="col-md-10 groupdetails ">
+					<md-input-container flex>
+						<div style="margin-top:4px;" ng-click="gotoGroupDetails(obj)">&nbsp;&nbsp;&nbsp;{{obj.groupname}}</div>
+					</md-input-container>
+				</div>
+				<!-- <div class="col-md-4 qtdetails groupkey">
+						<md-input-container flex>
+							<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.key}}</div>
+						</md-input-container>
+					</div> -->
+				<div class="col-md-2 qtdetails groupkey">
+					<md-input-container flex>
+						<button id="delbtn" type="button" class="btn btn-info" ng-click="copyToClipboard(obj.key)" style="margin-right:20px;" data-toggle="tooltip"
+						 data-placement="top" title="Copy group key">
+							<i class="glyphicon glyphicon-copy"></i>
+						</button>
+						<button id="delbtn" type="button" class="btn btn-danger" ng-click="deletegroup(obj)" data-toggle="tooltip" data-placement="top"
+						 title="Delete group">
+							<i class="glyphicon glyphicon-trash"></i>
+						</button>
+					</md-input-container>
+				</div>
+			</div>
 
-		<div class="row" ng-repeat="obj in groups" style="background-color: lightgray;margin-top: 2px;width:100%">
-
-			<div class="col-md-6 groupdetails roweffect">
-				<md-input-container flex>
-					<div style="margin-top:4px;" ng-click="gotoGroupDetails(obj)">&nbsp;&nbsp;&nbsp;{{obj.groupname}}</div>
-				</md-input-container>
-			</div>
-			<div class="col-md-5 qtdetails groupkey roweffect">
-				<md-input-container flex>
-					<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.key}}</div>
-				</md-input-container>
-			</div>
-			<div class="col-md-1 qtdetails groupkey roweffect">
-				<md-input-container flex>
-					<button id="delbtn" type="button" class="btn btn-danger" ng-click="deletegroup(obj)">
-						<i class="glyphicon glyphicon-trash"></i>
-					</button>
-				</md-input-container>
-			</div>
 		</div>
 
 	</div>
 </body>
 <style>
+	.container {
+		text-align: center;
+	}
+
 	.groupdetails {
 		border-radius: 3px;
 		min-height: 40px;
-		max-height: 80px;
 		font-weight: bold;
 		vertical-align: middle;
-		font-size: 23px;
+		font-size: 18px;
 		cursor: pointer;
 	}
 
-	.groupkey {
+	/* .groupkey {
 		color: green;
 		border-radius: 3px;
 		min-height: 40px;
-		max-height: 80px;
 		font-weight: bold;
 		vertical-align: middle;
 		font-size: 15px;
-	}
+	} */
 
 	.title {
 		font-weight: bold;
@@ -124,8 +132,9 @@
 	}
 
 	md-input-container {
-		width: 80%;
-		margin-left: 10%
+		width: 100%;
+		margin: 10px 0;
+		/* margin-left: 10% */
 	}
 
 	#exportbtn:hover {
@@ -149,6 +158,26 @@
 		margin-left: 50%;
 	}
 
+	.typequestion {
+		cursor: pointer;
+	}
+
+	.texteffect {
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		text-shadow: 3px 4px #e6b3ff;
+		font-weight: bold;
+		font-size: 44px;
+	}
+
+	.data-content {
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		text-shadow: 3px 4px #e6b3ff;
+		font-weight: bold;
+		height: calc(100vh - 200px);
+		/* background: cadetblue; */
+		overflow-y: auto;
+	}
+
 	/* Safari */
 
 	@-webkit-keyframes spin {
@@ -168,29 +197,6 @@
 			transform: rotate(360deg);
 		}
 	}
-
-	.typequestion {
-		cursor: pointer;
-	}
-
-	.texteffect {
-		font-family: "Comic Sans MS", cursive, sans-serif;
-		text-shadow: 3px 4px #e6b3ff;
-		font-weight: bold;
-		font-size: 44px;
-	}
-
-	.roweffect {
-		font-family: "Comic Sans MS", cursive, sans-serif;
-		text-shadow: 3px 4px #e6b3ff;
-		font-weight: bold;
-		/* padding-right: 0px;
-		padding-left: 0px; */
-	}
-
-	/* .main {
-		width: calc(100% - 50px);
-	} */
 </style>
 
 </html>

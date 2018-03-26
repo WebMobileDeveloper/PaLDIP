@@ -199,6 +199,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 		$scope.loadingfinished = false;
 		var groupkey = localStorage.getItem("groupkey").split("/")[0];
+
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var uid = user.uid;
@@ -210,9 +211,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					$scope.dropdownTypequestions = {};
 					$scope.slideTypequestions = {};
 
-
+					var loopCount = snapshot.numChildren();
 					snapshot.forEach(function (set) {
-
 						$scope.setsInGroup[set.val()['key']] = set.val();
 						var questionsetkey = set.val()['key'];
 						var questionsetName = set.val()['setname'];
@@ -226,7 +226,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 
 						// ++++++++++++++++++ get Feedback Type Questions ++++++++++++++++++
-
+						loopCount += 5;
 						var qtdata = firebase.database().ref('Questions').orderByChild("Set").equalTo(questionsetkey);
 						qtdata.on('value', function (snapshot) {
 							snapshot.forEach(function (childSnapshot) {
@@ -236,6 +236,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Feedback Type'
 								};
 							});
+							loopCount--;
+							if (loopCount == 0) {
+								$scope.loadingfinished = true;
+							}
 							$scope.safeApply();
 						});
 
@@ -250,6 +254,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Digit Type'
 								};
 							});
+							loopCount--;
+							if (loopCount == 0) {
+								$scope.loadingfinished = true;
+							}
 							$scope.safeApply();
 						});
 
@@ -264,6 +272,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Text Type'
 								};
 							});
+							loopCount--;
+							if (loopCount == 0) {
+								$scope.loadingfinished = true;
+							}
 							$scope.safeApply();
 						});
 
@@ -278,6 +290,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Dropdown Type'
 								};
 							});
+							loopCount--;
+							if (loopCount == 0) {
+								$scope.loadingfinished = true;
+							}
 							$scope.safeApply();
 						});
 
@@ -292,14 +308,21 @@ app.controller('MainCtrl', function ($scope, toaster) {
 									setName: questionsetName, type: 'Slide Type'
 								};
 							});
+							loopCount--;
+							if (loopCount == 0) {
+								$scope.loadingfinished = true;
+							}
 							$scope.safeApply();
 						});
+						loopCount--;
+						if (loopCount == 0) {
+							$scope.loadingfinished = true;
+						}
+						$scope.safeApply();
 
 					});
 
 				});
-
-				$scope.loadingfinished = true;
 				$scope.safeApply();
 			} else {
 				$scope.error("You need to login!");
@@ -456,8 +479,8 @@ app.controller('MainCtrl', function ($scope, toaster) {
 			var i = 0;
 			for (i = 0; i < $scope.chartLavels.length; i++) {
 				//$scope.chartValues[i] = Math.round($scope.chartValues[i] / totalAnswers * 1000) / 10;
-				if($scope.chartLavels[i].length>53){
-					$scope.chartLavels[i] = $scope.chartLavels[i].substring(0,49)+" ...";
+				if ($scope.chartLavels[i].length > 53) {
+					$scope.chartLavels[i] = $scope.chartLavels[i].substring(0, 49) + " ...";
 				}
 			}
 			if ($scope.chartValues.length == 0) {
@@ -465,10 +488,10 @@ app.controller('MainCtrl', function ($scope, toaster) {
 				$scope.safeApply();
 			}
 			$scope.paintgraph($scope.chartLavels, $scope.chartValues, "pieChart");
-		});	
+		});
 	}
 
-	$scope.paintgraph = function (title, value, Dom) {		
+	$scope.paintgraph = function (title, value, Dom) {
 		var canvas = document.getElementById(Dom);
 		var ctx = canvas.getContext("2d");
 		// ==========update chart================
@@ -543,10 +566,17 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							beginAtZero: true
 						}
 					}]
-					
+
 				}
 			}
 		});
+	}
+	$scope.copyToClipboard = function (str) {
+		var $temp = $("<input>");
+		$("body").append($temp);
+		$temp.val(str).select();
+		document.execCommand("copy");
+		$temp.remove();
 	}
 
 });
