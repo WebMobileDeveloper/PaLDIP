@@ -24,6 +24,18 @@
 </head>
 
 <body data-ng-controller="MainCtrl" ng-init="getqtsteacherside('Questions')">
+	<div ng-hide="loadingfinished" style="width: 100%; height: 100vh; background: rgba(0,0,0,0.06); position: absolute; z-index: 100;padding-right: 60px;">
+		<div class="loader" style="margin-top: 50vh;
+								border: 16px solid #f3f3f3;
+								border-radius: 50%;
+								border-top: 16px solid #3498db;
+								width: 120px;
+								height: 120px;
+								-webkit-animation: spin 2s linear infinite;
+								/* Safari */
+								animation: spin 2s linear infinite;
+								margin-left: 50%;"></div>
+	</div>
 	<nav class="navbar navbar-inverse">
 		<div class="navbar-header">
 			<a href="./exportAll.html" class="navbar-brand typequestion" style="color: white;">Feedback Type</a>
@@ -42,33 +54,31 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
 				<li>
-					<a href="../questionSets.html">
+					<a href="./choiceGroups.html">
 						<span class="glyphicon glyphicon-chevron-left"></span> Back
 					</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
+
 	<div class="main">
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-md-8 col-md-offset-2 group-title">
+				{{grouptitle}}
 			</div>
-			<div class="col-md-1">
-				<md-input-container flex>
-					<a id="exportbtn" type="button" class="btn btn-success" style="background-color:#177c48;border-color:white;" ng-click="exportAllQuestionDatas('Answers')">
-						<i class="glyphicon glyphicon-export"></i>Export All
-					</a>
-				</md-input-container>
+			<div class="col-md-2">
+				<a id="exportbtn" type="button" class="btn btn-success" style="background-color:#177c48;border-color:white;" ng-click="exportAllQuestionDatas('Answers')">
+					<i class="glyphicon glyphicon-export"></i>Export All
+				</a>
 			</div>
 		</div>
 		<hr style="border: 1px solid gray" />​
-		<div class="loader" ng-show="deletingprogresskey"></div>
-
 		<div class="row">
 			<md-input-container flex>
 				<div class="row question-row" ng-repeat="obj in questions track by $index" style="margin-top:5px;" ng-hide="deletingprogresskey">
 					<div class="col-md-2 qtdetails" style="color: black;background-color: #d2e5f5;border-color: white;text-align:right;">
-						<div style="margin-top:4px; ">&nbsp;&nbsp;&nbsp;{{obj.questionSet}}</div>
+						<div style="margin-top:4px; ">&nbsp;&nbsp;&nbsp;{{obj.questionSet.setname}}</div>
 					</div>
 					<div class="col-md-8  qtdetails">
 						<div style="margin-top:4px;">&nbsp;&nbsp;&nbsp;{{obj.value}}</div>
@@ -91,6 +101,21 @@
 	</div>
 </body>
 <style>
+	.group-title {
+		text-align: center;
+		text-align: center;
+		font-size: 2em;
+		font-weight: 600;
+		font-style: oblique;
+		color: #4a407d;
+		text-shadow: 1px 2px #0077ff75;
+	}
+
+	.row {
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+
 	.question-row {
 		display: flex;
 	}
@@ -116,17 +141,6 @@
 		color: #fcad4e;
 	}
 
-	.loader {
-		border: 16px solid #f3f3f3;
-		border-radius: 50%;
-		border-top: 16px solid #3498db;
-		width: 120px;
-		height: 120px;
-		-webkit-animation: spin 2s linear infinite;
-		/* Safari */
-		animation: spin 2s linear infinite;
-		margin-left: 50%;
-	}
 
 	/* Safari */
 

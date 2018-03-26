@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html data-ng-app="DemoApp">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<link rel="stylesheet" href="https://rawgit.com/angular/bower-material/master/angular-material.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-aria.js"></script>
+	<script src="https://rawgit.com/angular/bower-material/master/angular-material.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/60204/toaster.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+
+	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+	<script src="../../../firebase_config.js"></script>
+	<script src="../../../js/angular/group.js"></script>
+	<title>Groups</title>
+</head>
+
+<body data-ng-controller="MainCtrl">
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../../../index.html">
+						<span class="glyphicon glyphicon-log-out"></span> Sign Out
+					</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" style="cursor:pointer">
+				<li>
+					<a href="../questionSets.html">
+						<span class="glyphicon glyphicon-chevron-left"></span> Back </a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="title">My Groups</div>
+	<div class="main container" ng-init="getgroups()">
+		<div ng-hide="loadingfinished" class="loader-container">
+			<div class="loader"></div>
+		</div>
+		<div class="contents" ng-show="loadingfinished">
+			<div ng-repeat="obj in groups" ng-click="gotoGroupExport(obj)" class="col-md-12 groupdetails">&nbsp;&nbsp;&nbsp;{{obj.groupname}}</div>
+		</div>
+	</div>
+</body>
+<style>
+	.navbar {
+		margin-bottom: 3px;
+	}
+
+	.container {
+		text-align: center;
+	}
+
+	.title {
+		text-align: center;
+		font-weight: bold;
+		font-size: 26px;
+		color: white;
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		text-shadow: 3px 4px #e6b3ff;
+		background-color: palevioletred;
+		padding: 10px 0px;
+	}
+	.loader-container{
+		margin-top: 30vh;
+	}
+	.contents {
+		height: calc(100vh - 150px);
+		overflow-y: auto;
+	}
+
+	.groupdetails {
+		min-height: 40px;
+		max-height: 80px;
+		font-weight: bold;
+		font-size: 18px;
+		cursor: pointer;
+		font-family: "Comic Sans MS", cursive, sans-serif;
+		font-weight: bold;
+		padding: 10px 0px;
+		background: #e5e3ec;
+		margin: 5px 0px;
+	}
+
+	.groupdetails:hover {
+		font-weight: 900;
+		color: #ec1c54;
+		text-shadow: 1px 2px #dc8ecd;
+		background: #e3dff1;
+	}
+
+	.loader {
+		border: 16px solid #f3f3f3;
+		border-radius: 50%;
+		border-top: 16px solid #3498db;
+		width: 120px;
+		height: 120px;
+		-webkit-animation: spin 2s linear infinite;
+		/* Safari */
+		animation: spin 2s linear infinite;
+		margin-left: 50%;
+	}
+
+	/* Safari */
+
+	@-webkit-keyframes spin {
+		0% {
+			-webkit-transform: rotate(0deg);
+		}
+		100% {
+			-webkit-transform: rotate(360deg);
+		}
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+</style>
+
+</html>

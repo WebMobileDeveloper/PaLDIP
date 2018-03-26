@@ -63,7 +63,14 @@
 		<table class="table table-bordered datatable" id="table-1">
 			<thead>
 				<tr>
-					<th colspan="{{(feedtextlimit==0)?8:feedtextlimit+9}}" style="text-align:center">{{exportQuestionsentence}}{{loadingfinished}}</th>
+					<th colspan="{{(feedtextlimit==0)?7:feedtextlimit+8}}" style="text-align:center;">						
+							<b style="font-size:1.5em;">{{grouptitle}}</b><br/>
+					</th>
+				</tr>
+				<tr>
+					<th colspan="{{(feedtextlimit==0)?7:feedtextlimit+8}}" style="text-align:center;">
+						<b>{{exportQuestionsentence}}</b>
+					</th>
 				</tr>
 				<tr>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">User</th>
@@ -71,7 +78,6 @@
 					<th rowspan="2" style="text-align:center;vertical-align:middle">Age</th>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">Profession</th>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">Mother tongue</th>
-					<th rowspan="2" style="text-align:center;vertical-align:middle">Group code</th>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">Answer</th>
 					<th rowspan="2" style="text-align:center;vertical-align:middle">Date/Time</th>
 					<th class="detachingfield" colspan="{{feedtextlimit}}" style="text-align:center" ng-if="!hidefeedfield">Feedback</th>
@@ -88,7 +94,6 @@
 					<td style="text-align:center">{{obj.Age}}</td>
 					<td style="text-align:center">{{obj.Profession}}</td>
 					<td style="text-align:center">{{obj.Mothertongue}}</td>
-					<td style="text-align:center">{{obj.Groupcode}}</td>
 					<td style="text-align:center">{{obj.answer}}</td>
 					<td style="text-align:center">{{obj.datetime}}</td>
 					<td style="text-align:center" class="detachingfield" ng-if="!hidefeedfield" ng-repeat="feed in thcols track by $index">{{obj.feedtxt[$index]}}</td>

@@ -46,6 +46,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 	//=======================get groups functions===============     
 	$scope.getgroups = function () {
+		$scope.loadingfinished = false;
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var uid = user.uid;
@@ -54,11 +55,17 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					$scope.groups = [];
 					snapshot.forEach(function (childSnapshot) {
 						$scope.groups.push({ groupname: childSnapshot.val()['groupname'], key: childSnapshot.key + "/" + uid });
-					});					
+					});	
+					$scope.loadingfinished = true;	
+					if($scope.groups.length==0){
+						$scope.warning("There isn't any group!");
+					}			
 					$scope.safeApply();
 				});
 			} else {
 				$scope.error("You need to login!");
+				$scope.loadingfinished = true;				
+				$scope.safeApply();
 			}
 		});
 	}
@@ -99,6 +106,11 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 
 
+	$scope.gotoGroupExport = function (obj) {
+		localStorage.setItem("groupkey", obj.key);
+		localStorage.setItem("groupname", obj.groupname);
+		window.location.href = '../exportAnswer/exportAll.html';
+	}
 
 	// =====================================================================================|
 	//                                                                  					|

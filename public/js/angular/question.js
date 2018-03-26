@@ -20,7 +20,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     $scope.answerindex = 0;
     $scope.questionplan = '';
     $scope.hideindex = false;
-    $scope.deletingprogresskey = false;
+    $scope.loadingfinished = true;
     $scope.feedtextlimit = 0;
     $scope.totalQuestionCount = 0;
     $scope.exportToExcel = function (tableId) { // ex: '#my-table'
@@ -693,49 +693,71 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
 
     $scope.getqtsteacherside = function (questionRefName) {
 
-        // firebase.auth().onAuthStateChanged(function (user) {
-        //     if (user) {
-        var questionSetRef = firebase.database().ref('QuestionSets');
-        questionSetRef.on('value', function (snapshot) {
-            questionSets = [];
-            snapshot.forEach(function (childSnapshot) {
-                var key = childSnapshot.key
-                var childData = childSnapshot.val();
-                questionSets[key] = childData['setname'];
-            });
-            var questionsRef = firebase.database().ref(questionRefName);
-            questionsRef.on('value', function (snapshot) {
-                $scope.questions = [];
-                snapshot.forEach(function (childSnapshot) {
-                    var key = childSnapshot.key
-                    var childData = childSnapshot.val();
-                    var set = childData['Set'];
-
-                    if (questionRefName == 'Questions') {  //if Feedback type question
-                        if (childData['feedqts'] == undefined) {
-                            $scope.questions.push({
-                                key: key, value: childData['question'], type: childData['type'], questionSet: questionSets[set], feedqts: []
-                            });
-                        } else {
-                            $scope.questions.push({
-                                key: key, value: childData['question'], type: childData['type'], questionSet: questionSets[set], feedqts: childData['feedqts']
-                            });
-                        }
-                    } else {
-                        $scope.questions.push({ key: key, value: childData['question'], questionSet: questionSets[set] });
+        $scope.loadingfinished = false;
+        $scope.createdByMe = true;
+        $scope.setsInGroup = {};
+        $scope.grouptitle = localStorage.getItem("groupname");
+        var groupkey = localStorage.getItem("groupkey").split("/")[0];
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                var uid = user.uid;
+                var setIngroupdata = firebase.database().ref('Groups/' + uid + '/' + groupkey + '/QuestionSets');
+                setIngroupdata.on('value', function (groupSnapshot) {
+                    groupSnapshot.forEach(function (set) {
+                        $scope.setsInGroup[set.val()['key']] = set.val();
+                    });
+                    if ($scope.setsInGroup.length == 0) {
+                        $scope.warning("There isn't any question set.");
+                        $scope.loadingfinished = true;
+                        $scope.safeApply();
+                        return;
                     }
+                    var questionsRef = firebase.database().ref(questionRefName);
+                    questionsRef.on('value', function (qtSnapshot) {
+                        $scope.questions = [];
+                        qtSnapshot.forEach(function (childSnapshot) {
+                            if ($scope.setsInGroup[childSnapshot.val()['Set']]) {
+                                var key = childSnapshot.key
+                                var childData = childSnapshot.val();
+                                var questionSet = $scope.setsInGroup[childSnapshot.val()['Set']];
+
+                                if (questionRefName == 'Questions') {  //if Feedback type question
+                                    if (childData['feedqts'] == undefined) {
+                                        $scope.questions.push({
+                                            key: key, value: childData['question'], type: childData['type'], questionSet: questionSet, feedqts: []
+                                        });
+                                    } else {
+                                        $scope.questions.push({
+                                            key: key, value: childData['question'], type: childData['type'], questionSet: questionSet, feedqts: childData['feedqts']
+                                        });
+                                    }
+                                } else {
+                                    $scope.questions.push({ key: key, value: childData['question'], questionSet: questionSet });
+                                }
+                            }
+                        });
+                        if ($scope.questions.length == 0) {
+                            $scope.warning("There isn't any question data.");
+                        }
+                        $scope.loadingfinished = true;
+                        $scope.safeApply();
+                    });
                 });
+            } else {
+                $scope.error("You need to login!");
+                $scope.loadingfinished = true;
                 $scope.safeApply();
-            });
+            }
         });
-        //     } else {
-        //         $scope.error("You need to login!");
-        //     }
-        // });
     }
     //======================================================================
     $scope.exportAllQuestionDatas = function (dbname) {
         localStorage.setItem("databasename", dbname);
+        var questionkeyArrStr = "";
+        $scope.questions.forEach(function (qst) {
+            questionkeyArrStr += "/" + qst.key;
+        });
+        localStorage.setItem("questionkeyArrStr", questionkeyArrStr);
         window.location.href = './exportAlltoExcel.html';
     }
     //=======================export a response functions===============    
@@ -748,7 +770,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     //=======================delete a response functions===============    
     $scope.deletequestion = function (key, dbname) {
         if (confirm('Do you want to delete this question?')) {
-            $scope.deletingprogresskey = true;
+            $scope.loadingfinished = false;
             var i = 0;
             dbnames.forEach(dbname => {
                 firebase.database().ref(dbname + '/' + key).remove();
@@ -762,8 +784,6 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         }
     }
 
-
-
     // =====================================================================================|
     //                                                                  					|
     // 								Export All Question to Excel									|
@@ -771,50 +791,70 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     // =====================================================================================|
 
     $scope.initExport = function () {
+
+        $scope.grouptitle = localStorage.getItem("groupname");
+        var groupkey = localStorage.getItem("groupkey").split("/")[0];
+
         $scope.hidefeedfield = true;
         var exportQuestionKey = localStorage.getItem("exportQuestionKey");
         $scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
         $scope.databasename = localStorage.getItem("databasename");
         $scope.loadingfinished = false;
         $scope.answers = [];
-        $scope.totalLoopCount=0;
+        $scope.totalLoopCount = 0;
         $scope.getAnswers(exportQuestionKey, $scope.exportQuestionsentence);
     }
 
     $scope.initExportAll = function () {
+        $scope.grouptitle = localStorage.getItem("groupname");
+
         $scope.hidefeedfield = true;
         $scope.databasename = localStorage.getItem("databasename");
         $scope.loadingfinished = false;
         $scope.answers = [];
         $scope.getAllAnswers();
     }
-    $scope.getAllAnswers = function () {
-        var questions = firebase.database().ref($scope.databasename);
-        questions.on('value', function (snapshot) {
-            $scope.totalLoopCount = snapshot.numChildren();
+    $scope.getAllAnswers = function () {     
+
+        var questionkeyArrStr =localStorage.getItem("questionkeyArrStr");
+        var questionsRef = firebase.database().ref($scope.databasename);
+        questionsRef.on('value', function (qtSnapshot) {
+            $scope.totalLoopCount = 0;
+            qtSnapshot.forEach(function (childSnapshot) {   
+                var exportQuestionKey = childSnapshot.key;   
+                if (questionkeyArrStr.includes(exportQuestionKey)) {
+                    $scope.totalLoopCount++;
+                } 
+            });
+
             if ($scope.totalLoopCount == 0) {
                 $scope.loadingfinished = true;
                 $scope.noAnswerMessage = "There isn't any questions.";
                 $scope.safeApply();
-            } else {
-                snapshot.forEach(function (childSnapshot) {
-                    $scope.totalLoopCount--;
-                    var exportQuestionKey = childSnapshot.key;
-                    $scope.getAnswers(exportQuestionKey, childSnapshot.val()['question']);
+            } else {                
+                qtSnapshot.forEach(function (childSnapshot) {                    
+                   
+                    var exportQuestionKey = childSnapshot.key;   
+                    if (questionkeyArrStr.includes(exportQuestionKey)) {
+                        $scope.totalLoopCount--;
+                        $scope.getAnswers(exportQuestionKey, childSnapshot.val()['question']);
+                    } 
                 });
             }
         });
+
     }
 
 
     $scope.getAnswers = function (exportQuestionKey, exportQuestionsentence) {
+        
         var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
         answersRef.on('value', function (answersSnapshot) {
             $scope.feedtextlimit = 0;
             var resultaverage;
             $scope.thcols = [];
             var totalAnswerCount = answersSnapshot.numChildren();
-            if (totalAnswerCount == 0) {                
+            if (totalAnswerCount == 0) {
                 if ($scope.totalLoopCount == 0) {
                     if ($scope.answers.length == 0) {
                         $scope.noAnswerMessage = "There isn't any answers.";
@@ -825,6 +865,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                 }
             }
             $scope.totalLoopCount += totalAnswerCount;
+            
             answersSnapshot.forEach(function (answerSnapshot) {
                 $scope.totalLoopCount--;
                 var answerkey = answerSnapshot.key;
@@ -873,6 +914,8 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         })
     }
     $scope.getScoreData = function (lastScore, exportQuestionsentence, answerSnapshot, texts, score = undefined) {
+        
+        
         var totalsumscore = 0;
         var countscore = 0;
         var resultaverage = 0;
@@ -908,10 +951,10 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                     'Profession': profileinformation.profession,
                     'Age': profileinformation.age,
                     'Mothertongue': profileinformation.countrylanguage,
-                    'Groupcode': profileinformation.groupcode
-                });
-                // console.log("Question:",$scope.totalQuestionCount,$scope.totalAnswerCount)
+                    // 'Groupcode': profileinformation.groupcode
+                });            
 
+                
                 if ($scope.totalLoopCount == 0) {
                     if ($scope.answers.length == 0) {
                         $scope.noAnswerMessage = "There isn't any answers.";
