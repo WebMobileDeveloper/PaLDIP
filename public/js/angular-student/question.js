@@ -696,7 +696,7 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
         $scope.totalcount = 0;
 
         studentgroupkey = localStorage.getItem("studentgroupkey");
-
+        console.log(studentgroupkey)
 
         var dropdownanswerRef = firebase.database().ref('DropdownAnswers/' + $scope.questionkey + '/answer');
         dropdownanswerRef.on('value', function (snapshot) {
@@ -724,19 +724,22 @@ app.controller('MainCtrl', function ($scope, toaster, $sce) {
             for (var k = 0; k < mainvalues.length; k++) {
                 if (mainlabels[k] == undefined)
                     continue;
-                $scope.mainvalues.push(Math.round(mainvalues[k] / $scope.maincount * 100 * 10) / 10);
+                // $scope.mainvalues.push(Math.round(mainvalues[k] / $scope.maincount * 100 * 10) / 10);
+                $scope.mainvalues.push(mainvalues[k]);
                 $scope.mainlabels.push(mainlabels[k]);
             }
             for (var k = 0; k < othervalues.length; k++) {
                 if (otherlabels[k] == undefined)
                     continue;
-                $scope.othervalues.push(Math.round(othervalues[k] / $scope.othercount * 100 * 10) / 10);
+                // $scope.othervalues.push(Math.round(othervalues[k] / $scope.othercount * 100 * 10) / 10);
+                $scope.othervalues.push(othervalues[k]);
                 $scope.otherlabels.push(otherlabels[k]);
             }
             for (var k = 0; k < totalvalues.length; k++) {
                 if (totallabels[k] == undefined)
                     continue;
-                $scope.totalvalues.push(Math.round(totalvalues[k] / $scope.totalcount * 100 * 10) / 10);
+                // $scope.totalvalues.push(Math.round(totalvalues[k] / $scope.totalcount * 100 * 10) / 10);
+                $scope.totalvalues.push(totalvalues[k]);
                 $scope.totallabels.push(totallabels[k]);
             }
 

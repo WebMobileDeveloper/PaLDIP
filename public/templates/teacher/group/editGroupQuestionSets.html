@@ -19,6 +19,11 @@
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
 
+	
+	<link rel="stylesheet" href="../../../lib/css/dragula.min.css" />
+	<script src="../../../lib/angular/angular-dragula.min.js"></script>
+
+
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="../../../firebase_config.js"></script>
 	<script src="../../../js/angular/group.js"></script>
@@ -46,14 +51,17 @@
 	<div class="row" style="text-align: center;color: palevioletred;">
 		<h1>{{grouptitle}}</h1>
 	</div>
+
+
 	<div class="main row">
 		<div class="col-md-6">
 			<div class="row button-bar">
 				<button class="btn" ng-disable="true" style="margin-left: 5%;">Sets In Group</button>
 			</div>
 			<hr style="border: 1px solid gray" />​
-			<div class="col-md-12 set-box">
-				<div class="setlists" ng-repeat="set in setsInGroup" style="background-color:#167aff" ng-click="removefromgroup(set)">{{set.setname}}</div>
+			<div class="col-md-12 set-box" dragula='"drag-div"' dragula-model="dragArray">
+				<!-- <div class="setlists" ng-repeat="set in dragArray | orderObjectBy:'order':false" style="background-color:#167aff" ng-click="removefromgroup(set)">{{set.setname}}-{{set.order}}</div> -->
+				<div class="setlists" ng-repeat="set in dragArray" style="background-color:#167aff" ng-click="removefromgroup(set)">{{set.setname}}</div>
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -68,8 +76,7 @@
 			<hr style="border: 1px solid gray" />​
 			<div class="col-md-12">
 				<div class="set-box">
-					<div class="setlists" ng-repeat="set in questionSetLists" ng-click="addtogroup(set)" 
-					ng-show="createdByMe == set.createdByMe && !set.existInGroup">{{set.setname}}</div>
+					<div class="setlists" ng-repeat="set in questionSetLists" ng-click="addtogroup(set)" ng-show="createdByMe == set.createdByMe && !set.existInGroup">{{set.setname}}</div>
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,42 @@
-var app = angular.module('DemoApp', ['ngMaterial', 'toaster']);
-app.controller('MainCtrl', function ($scope, toaster) {
+var app = angular.module('DemoApp', ['ngMaterial', 'toaster', angularDragula(angular)]);
+app.filter('orderObjectBy', function () {
+	return function (items, field, reverse) {
+		var filtered = [];
+		angular.forEach(items, function (item) {
+			filtered.push(item);
+		});
+		filtered.sort(function (a, b) {
+			return (a[field] > b[field] ? 1 : -1);
+		});
+		if (reverse) filtered.reverse();
+		return filtered;
+	};
+});
 
+app.controller('MainCtrl', function ($scope, toaster, dragulaService) {
+
+
+	dragulaService.options($scope, 'drag-div', {
+		removeOnSpill: false
+	});
+
+	$scope.$on('drag-div.drop', function (e, el) {
+		
+		// console.log($scope.dragArray);
+		
+		
+		// // console.log($scope.setsInGroup);
+		
+		// setTimeout(function(){
+		// 	for (var i = 0; i < $scope.dragArray.length; i++) {
+		// 		$scope.dragArray[i].order = i;
+		// 		$scope.setsInGroup[$scope.dragArray[i].key].order =i;
+		// 	}
+		// 	console.log($scope.dragArray);
+		// 	console.log($scope.setsInGroup);
+		// 	console.log("------------");
+		// },1);
+	});
 	$scope.categories = ['Teacher', 'Student'];
 	$scope.feeds = [{ type: 'Text', value: 0 }, { type: 'Scale', value: 1 }, { type: 'Scale and Text', value: 2 }];
 	$scope.answerindex = 0;
@@ -8,6 +44,7 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	$scope.hideindex = false;
 	$scope.deletingprogresskey = false;
 	$scope.loadingfinished = true;
+	$scope.items = ['q', 'e', 'r'];
 
 	$scope.warning = function (msg) {
 		toaster.pop('warning', "Warning", msg, 3000);
@@ -122,16 +159,21 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	//get sets in the group and total set lists
 	$scope.getQuesionSets = function () {//
 		$scope.createdByMe = true;
-		$scope.setsInGroup = {};
 		$scope.grouptitle = localStorage.getItem("groupname");
 		var groupkey = localStorage.getItem("groupkey").split("/")[0];
+
+		$scope.setsInGroup = {};
+		$scope.questionSetLists = {};
+		$scope.dragArray = [];
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var uid = user.uid;
 				var setIngroupdata = firebase.database().ref('Groups/' + uid + '/' + groupkey + '/QuestionSets');
 				setIngroupdata.on('value', function (snapshot) {
+					$scope.setsInGroup = {};
 					snapshot.forEach(function (set) {
 						$scope.setsInGroup[set.val()['key']] = set.val();
+						$scope.dragArray[set.val()['order']] = set.val();
 					});
 					var setdata = firebase.database().ref('QuestionSets');
 					setdata.on('value', function (snapshot) {
@@ -160,13 +202,16 @@ app.controller('MainCtrl', function ($scope, toaster) {
 	}
 	//add set to group
 	$scope.addtogroup = function (set) {
-		$scope.setsInGroup[set.key] = { setname: set.setname, key: set.key };
+		var lastIndex = $scope.dragArray.length;
+		$scope.setsInGroup[set.key] = { key: set.key, order: lastIndex, setname: set.setname };
+		$scope.dragArray[lastIndex] = { key: set.key, order: lastIndex, setname: set.setname };
 		$scope.questionSetLists[set.key].existInGroup = true;
 	}
 	//remove set from group
 	$scope.removefromgroup = function (set) {
 		$scope.questionSetLists[set.key].existInGroup = false;
 		delete $scope.setsInGroup[set.key];
+		$scope.dragArray.splice($scope.dragArray.indexOf(set), 1);
 	}
 	//Function to save Question sets in the group
 	$scope.saveGroupSet = function () {
@@ -175,6 +220,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var uid = firebase.auth().currentUser.uid;
 		var groupkey = localStorage.getItem("groupkey").split("/")[0];
 
+		for (var i = 0; i < $scope.dragArray.length; i++) {			
+			$scope.setsInGroup[$scope.dragArray[i].key].order =i;
+		}
 		updates['/Groups/' + uid + '/' + groupkey + '/QuestionSets'] = $scope.setsInGroup;
 		rootRef.update(updates).then(function () {
 			$scope.success('Question Sets are imported successfully!')
@@ -199,7 +247,6 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 		$scope.loadingfinished = false;
 		var groupkey = localStorage.getItem("groupkey").split("/")[0];
-
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var uid = user.uid;
@@ -212,6 +259,12 @@ app.controller('MainCtrl', function ($scope, toaster) {
 					$scope.slideTypequestions = {};
 
 					var loopCount = snapshot.numChildren();
+					if (loopCount == 0) {
+						$scope.warning("There isn't any data.");
+						$scope.loadingfinished = true;
+						$scope.safeApply();
+						return;
+					}
 					snapshot.forEach(function (set) {
 						$scope.setsInGroup[set.val()['key']] = set.val();
 						var questionsetkey = set.val()['key'];
@@ -238,6 +291,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							});
 							loopCount--;
 							if (loopCount == 0) {
+								var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+									Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+								if (total == 0) $scope.warning("There isn't any data.");
 								$scope.loadingfinished = true;
 							}
 							$scope.safeApply();
@@ -256,6 +312,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							});
 							loopCount--;
 							if (loopCount == 0) {
+								var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+									Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+								if (total == 0) $scope.warning("There isn't any data.");
 								$scope.loadingfinished = true;
 							}
 							$scope.safeApply();
@@ -274,6 +333,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							});
 							loopCount--;
 							if (loopCount == 0) {
+								var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+									Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+								if (total == 0) $scope.warning("There isn't any data.");
 								$scope.loadingfinished = true;
 							}
 							$scope.safeApply();
@@ -292,6 +354,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							});
 							loopCount--;
 							if (loopCount == 0) {
+								var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+									Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+								if (total == 0) $scope.warning("There isn't any data.");
 								$scope.loadingfinished = true;
 							}
 							$scope.safeApply();
@@ -310,20 +375,25 @@ app.controller('MainCtrl', function ($scope, toaster) {
 							});
 							loopCount--;
 							if (loopCount == 0) {
+								var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+									Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+								if (total == 0) $scope.warning("There isn't any data.");
 								$scope.loadingfinished = true;
 							}
 							$scope.safeApply();
 						});
 						loopCount--;
 						if (loopCount == 0) {
+							var total = Object.keys($scope.feedbackTypequestions).length + Object.keys($scope.digitTypequestions).length + Object.keys($scope.textTypequestions).length +
+								Object.keys($scope.textTypequestions).length + Object.keys($scope.slideTypequestions).length;
+							if (total == 0) $scope.warning("There isn't any data.");
 							$scope.loadingfinished = true;
 						}
 						$scope.safeApply();
-
 					});
 
+
 				});
-				$scope.safeApply();
 			} else {
 				$scope.error("You need to login!");
 				$scope.loadingfinished = true;
@@ -454,43 +524,130 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		});
 	}
 
+
 	$scope.viewQuestionDropdownanswer = function () {
 		var exportQuestionKey = localStorage.getItem("exportQuestionKey");
 		$scope.exportQuestionsentence = localStorage.getItem("exportQuestionsentence");
 		$scope.databasename = localStorage.getItem("databasename");
-
+		var questiongroupkey = localStorage.getItem("groupkey").split("/")[0];
 		$scope.loadingfinished = false;
-		$scope.chartLavels = [];
-		$scope.chartValues = [];
-		$scope.totalAnswers = 0;
-		var answersRef = firebase.database().ref($scope.databasename + '/' + exportQuestionKey + '/answer');
-		answersRef.on('value', function (snapshot) {
-			snapshot.forEach(function (answer) {
-				var index = $scope.chartLavels.indexOf(answer.val().answer);
-				if (index === -1) {
-					$scope.chartLavels.push(answer.val().answer);
-					$scope.chartValues.push(1);
+
+
+		$scope.mainvalues = [];
+		$scope.mainlabels = [];
+		$scope.othervalues = [];
+		$scope.otherlabels = [];
+		$scope.totalvalues = [];
+		$scope.totallabels = [];
+		$scope.selectedMain = true;
+		$scope.selectedOther = false;
+
+		mainvalues = [];
+		mainlabels = [];
+		othervalues = [];
+		otherlabels = [];
+		totalvalues = [];
+		totallabels = [];
+
+		$scope.maincount = 0;
+		$scope.othercount = 0;
+		$scope.totalcount = 0;
+
+		var dropdownanswerRef = firebase.database().ref('DropdownAnswers/' + exportQuestionKey + '/answer');
+		dropdownanswerRef.on('value', function (snapshot) {
+			var countOfanswers = snapshot.numChildren();
+
+			snapshot.forEach(function (childSnapshot) {
+				var key = childSnapshot.val()['answerkey'];
+				if (childSnapshot.val()['studentgroupkey'] == questiongroupkey) {
+					if (!mainvalues[key]) mainvalues[key] = 1;
+					else mainvalues[key] += 1;
+					mainlabels[key] = childSnapshot.val()['answer']
+					$scope.maincount++;
 				} else {
-					$scope.chartValues[index]++;
+					if (!othervalues[key]) othervalues[key] = 1;
+					else othervalues[key] += 1;
+					otherlabels[key] = childSnapshot.val()['answer']
+					$scope.othercount++;
 				}
-				$scope.totalAnswers++;
+				if (!totalvalues[key]) totalvalues[key] = 1;
+				else totalvalues[key] += 1;
+				totallabels[key] = childSnapshot.val()['answer']
+				$scope.totalcount++;
 			});
-			var i = 0;
-			for (i = 0; i < $scope.chartLavels.length; i++) {
-				//$scope.chartValues[i] = Math.round($scope.chartValues[i] / totalAnswers * 1000) / 10;
-				if ($scope.chartLavels[i].length > 53) {
-					$scope.chartLavels[i] = $scope.chartLavels[i].substring(0, 49) + " ...";
-				}
+
+			for (var k = 0; k < mainvalues.length; k++) {
+				if (mainlabels[k] == undefined)
+					continue;
+				// $scope.mainvalues.push(Math.round(mainvalues[k] / $scope.maincount * 100 * 10) / 10);
+				$scope.mainvalues.push(mainvalues[k]);
+				$scope.mainlabels.push(mainlabels[k]);
 			}
-			if ($scope.chartValues.length == 0) {
-				toaster.pop("error", "Error", "Sorry,There is not any data!", 1000);
-				$scope.safeApply();
+			for (var k = 0; k < othervalues.length; k++) {
+				if (otherlabels[k] == undefined)
+					continue;
+				// $scope.othervalues.push(Math.round(othervalues[k] / $scope.othercount * 100 * 10) / 10);
+				$scope.othervalues.push(othervalues[k]);
+				$scope.otherlabels.push(otherlabels[k]);
 			}
+			for (var k = 0; k < totalvalues.length; k++) {
+				if (totallabels[k] == undefined)
+					continue;
+				// $scope.totalvalues.push(Math.round(totalvalues[k] / $scope.totalcount * 100 * 10) / 10);
+				$scope.totalvalues.push(totalvalues[k]);
+				$scope.totallabels.push(totallabels[k]);
+			}
+
 			$scope.safeApply();
-			$scope.paintgraph($scope.chartLavels, $scope.chartValues, "pieChart");
+			$scope.drawDropdownAnswerChart();
 		});
 	}
-
+	$scope.appliedClass = function (myObj) {
+		if (myObj) {
+			return "selected";
+		} else {
+			return "deselected";
+		}
+	}
+	$scope.clickMain = function () {
+		if ($scope.selectedOther) {
+			$scope.selectedMain = !$scope.selectedMain;
+		} else {
+			$scope.selectedMain = true;
+		}
+		$scope.safeApply();
+		$scope.drawDropdownAnswerChart();
+	}
+	$scope.clickOther = function () {
+		if ($scope.selectedMain) {
+			$scope.selectedOther = !$scope.selectedOther;
+		} else {
+			$scope.selectedOther = true;
+		}
+		$scope.safeApply();
+		$scope.drawDropdownAnswerChart();
+	}
+	$scope.drawDropdownAnswerChart = function () {
+		if ($scope.selectedMain) {
+			if ($scope.selectedOther) {
+				$scope.chartDescription = "Compared to all groups include current group!";
+				$scope.numberOfAnswers = $scope.totalcount;
+				$scope.safeApply();
+				$scope.paintgraph($scope.totallabels, $scope.totalvalues, "pieChart");
+			} else {
+				$scope.chartDescription = "Compared only in current group!";
+				$scope.numberOfAnswers = $scope.maincount;
+				$scope.safeApply();
+				$scope.paintgraph($scope.mainlabels, $scope.mainvalues, "pieChart");
+			}
+		} else {
+			$scope.chartDescription = "Compared to all groups except current group!";
+			$scope.numberOfAnswers = $scope.othercount;
+			$scope.safeApply();
+			$scope.paintgraph($scope.otherlabels, $scope.othervalues, "pieChart");
+		}
+		$scope.safeApply();
+	}
 	$scope.paintgraph = function (title, value, Dom) {
 		var canvas = document.getElementById(Dom);
 		var ctx = canvas.getContext("2d");

@@ -50,13 +50,13 @@ app.controller('MainCtrl', function ($scope, toaster) {
 
 	//Discriminate
 	$scope.discrimination = function () {
-		if(!$scope.groupcode){
+		if (!$scope.groupcode) {
 			$scope.error("Please input group code!");
 			return;
 		}
 		var groupcode = $scope.groupcode.split("/")[0];
 		var teacher_id = $scope.groupcode.split("/")[1];
-		if(!teacher_id){
+		if (!teacher_id) {
 			$scope.error("Invalid format group code!");
 			return;
 		}
@@ -149,11 +149,9 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		var setnames = [];
 		var setkey = [];
 		for (key in obj.QuestionSets) {
-			setnames.push(obj.QuestionSets[key].setname);
-			setkey.push(obj.QuestionSets[key].key);
+			setnames[obj.QuestionSets[key].order] = obj.QuestionSets[key].setname;
+			setkey[obj.QuestionSets[key].order] = obj.QuestionSets[key].key;
 		}
-
-
 		localStorage.setItem("studentgroupsetkey", setkey);
 		localStorage.setItem("studentgroupsetname", setnames);
 		window.location.href = './studentGroupDetail.html';
@@ -165,14 +163,15 @@ app.controller('MainCtrl', function ($scope, toaster) {
 		$scope.studentgroupname = localStorage.getItem("studentgroupname");
 		var studentgroupsetkey = localStorage.getItem("studentgroupsetkey");
 		var studentgroupsetname = localStorage.getItem("studentgroupsetname");
-		
+
 
 		$scope.studentgroupsetkey = studentgroupsetkey.split(',');
-		$scope.studentgroupsetname = studentgroupsetname.split(',');
+		$scope.studentgroupsetname = studentgroupsetname.split(',');	
+
 		$scope.safeApply()
 	}
 
-	$scope.questions = function (key,name) {
+	$scope.questions = function (key, name) {
 		localStorage.setItem("questionsetkey", key);
 		localStorage.setItem("questionsetName", name);
 		window.location.href = '../question/questions for students.html';

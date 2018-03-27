@@ -24,6 +24,9 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
 
+	<link rel="stylesheet" href="../../../lib/css/dragula.min.css" />
+	<script src="../../../lib/angular/angular-dragula.min.js"></script>
+	
 	<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 	<script src="../../../firebase_config.js"></script>
 	<script src="../../../js/angular/group.js"></script>
@@ -50,11 +53,26 @@
 			<div class="row chart-row">
 				<canvas id="pieChart" basechart="" style="width:300px;height:300px; "></canvas>
 			</div>
+			<div class="row" style="text-align: center;
+								font-style: oblique;
+								font-weight: bold;
+								color: #f75a9a;
+								font-size: 1.2em;
+								margin-top: 10px;">
+				<span ng-show="chartDescription">{{chartDescription}}&emsp;(total answers:&emsp;{{numberOfAnswers}})</span>
+			</div>
 
 			<div class="row button-row">
-				<div class="col-md-6">Number of total Answers:&emsp;<b>{{totalAnswers}}</b></div>
-				<div class="col-md-6">
+				<div class="col-md-6 col-md-offset-3">
 					<a class="btn btn-link" href="./questionsInGroup.html">Back</a>
+				</div>
+			</div>
+			<div class="row button-row">
+				<div class="col-md-5">
+					<button class="btn" ng-class="appliedClass(selectedMain)" ng-click="clickMain()">This Group</button>
+				</div>
+				<div class="col-md-5 col-md-offset-2">
+					<button class="btn " ng-class="appliedClass(selectedOther)" ng-click="clickOther()">All Other Groups</button>
 				</div>
 			</div>
 		</div>
@@ -84,7 +102,43 @@
 	.button-row {
 		margin: 10px 10%;
 	}
+	button {
+		width: 100%;
+		border: solid 1px #2F528F !important;
+		color: white;
+		font-size: 1.2em !important;
+		font-weight: 600 !important;
+	}
 
+	button.selected {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:hover {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.selected:focus {
+		background-color: #4472C4;
+		color: white;
+	}
+
+	button.deselected {
+		background-color: #8faadca8;
+		color: white;
+	}
+
+	button.deselected:hover {
+		background-color: #8faadca8;
+		color: white;
+	}
+
+	button.deselected:focus {
+		background-color: #8faadca8;
+		color: white;
+	}
 	.btn-link,
 	.btn-link:active,
 	.btn-link:focus,
