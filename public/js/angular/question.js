@@ -834,7 +834,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     $scope.initExport = function () {
 
         $scope.grouptitle = localStorage.getItem("groupname");
-        var groupkey = localStorage.getItem("groupkey").split("/")[0];
+        $scope.groupkey = localStorage.getItem("groupkey").split("/")[0];
 
         $scope.hidefeedfield = true;
         var exportQuestionKey = localStorage.getItem("exportQuestionKey");
@@ -847,6 +847,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     }
 
     $scope.initExportAll = function () {
+        $scope.groupkey = localStorage.getItem("groupkey").split("/")[0];
         $scope.grouptitle = localStorage.getItem("groupname");
 
         $scope.hidefeedfield = true;
@@ -980,22 +981,37 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
                 for (var k = 0; k < $scope.feedtextlimit; k++) {
                     $scope.thcols[k] = '1';
                 }
-                $scope.answers.push({
-                    'mail': answerSnapshot.val()['mail'],
-                    'question': exportQuestionsentence,
-                    'answer': answerSnapshot.val()['answer'],
-                    'datetime': answerSnapshot.val()['datetime'],
-                    'feedtxt': texts,
-                    'averagescore': resultaverage,
-                    'Country': profileinformation.country,
-                    'Gender': profileinformation.gender,
-                    'Profession': profileinformation.profession,
-                    'Age': profileinformation.age,
-                    'Mothertongue': profileinformation.countrylanguage,
-                    // 'Groupcode': profileinformation.groupcode
+                $scope.totalLoopCount++;
+                var studentGroupRef = firebase.database().ref('StudentGroups/' + profileinformation.Userkey);
+
+                studentGroupRef.on('value', function (snapshot) {
+                    snapshot.forEach(groupInfo => {
+                        if (groupInfo.val() == $scope.groupkey) {
+                            $scope.answers.push({
+                                'mail': answerSnapshot.val()['mail'],
+                                'question': exportQuestionsentence,
+                                'answer': answerSnapshot.val()['answer'],
+                                'datetime': answerSnapshot.val()['datetime'],
+                                'feedtxt': texts,
+                                'averagescore': resultaverage,
+                                'Country': profileinformation.country,
+                                'Gender': profileinformation.gender,
+                                'Profession': profileinformation.profession,
+                                'Age': profileinformation.age,
+                                'Mothertongue': profileinformation.countrylanguage,
+                                // 'Groupcode': profileinformation.groupcode
+                            });
+                        }
+                    });
+                    $scope.totalLoopCount--;
+                    if ($scope.totalLoopCount == 0) {
+                        if ($scope.answers.length == 0) {
+                            $scope.noAnswerMessage = "There isn't any answers.";
+                        }
+                        $scope.loadingfinished = true;
+                        $scope.safeApply();
+                    }
                 });
-
-
                 if ($scope.totalLoopCount == 0) {
                     if ($scope.answers.length == 0) {
                         $scope.noAnswerMessage = "There isn't any answers.";
