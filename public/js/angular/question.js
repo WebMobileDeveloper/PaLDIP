@@ -228,7 +228,7 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
     $scope.showQuestionsInSet = function (set) {
         localStorage.setItem('questionsetkey', set.key);
         localStorage.setItem('questionsetName', set.setname);
-        localStorage.setItem('tagEditable', set.createdByMe);
+        localStorage.setItem('createdByMe', set.createdByMe);
         window.location.href = './viewquestion/questions.html';
     }
 
@@ -630,8 +630,8 @@ app.controller('MainCtrl', function ($scope, toaster, Excel, $timeout) {
         $scope.loadingfinished = false;
         var questionsetkey = localStorage.getItem("questionsetkey");
         $scope.questionsetName = localStorage.getItem("questionsetName");
-        $scope.tagEditable = localStorage.getItem("tagEditable");
-        $scope.tagEditable = ($scope.tagEditable == 'true') ? true : false;
+        $scope.createdByMe = localStorage.getItem("createdByMe");
+        $scope.createdByMe = ($scope.createdByMe == 'true') ? true : false;
 
 
         $scope.safeApply();
